@@ -6,7 +6,7 @@ exports.up = knex => (
   knex.schema
     .createTableIfNotExists('email_verification', table => {
         table
-            .integer('owner_id')
+            .integer('ownerId')
             .references('id')
             .inTable('users')
             .primary();
