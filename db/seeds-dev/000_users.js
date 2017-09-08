@@ -4,6 +4,7 @@ const faker = require('faker/locale/en');
 const userFields = {
   email: faker.internet.email,
   description: faker.lorem.sentences,
+  active: true,
   scope: 'user',
 };
 
@@ -17,7 +18,7 @@ exports.seed = knex =>
     .insert(
       {
         ...simpleFixtures.generateFixture(userFields),
-
+        active: true,
         email: 'foo@bar.com',
         scope: 'admin',
       },
