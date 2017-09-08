@@ -1,4 +1,5 @@
 import knex from '../utils/db';
+const crypto = require('crypto');
 
 const userListFields = ['id', 'email'];
 
@@ -30,6 +31,11 @@ export const dbCreateUser = ({ password, ...fields }) =>
     await trx('secrets').insert({
       ownerId: user.id,
       password,
+    });
+
+    await trx('email_verification').insert({
+      ownerId: user.id,
+      hash: crypto.randomBytes(48).toString('hex')
     });
 
     return user;
