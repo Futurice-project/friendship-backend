@@ -11,6 +11,10 @@ exports.up = knex => (
       table.enum('scope', ['admin', 'user']).notNullable();
       table.text('email').notNullable().unique();
       table.text('description');
+      table.text('firstname');
+      table.text('lastname');
+      table.text('username');
+      table.text('emoji');
       table.binary('image');
     })
 

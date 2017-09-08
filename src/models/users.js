@@ -1,6 +1,6 @@
 import knex from '../utils/db';
 
-const userListFields = ['id', 'email'];
+const userListFields = ['id', 'email', 'username', 'description', 'emoji'];
 
 export const dbGetUsers = () => (
   knex('users')

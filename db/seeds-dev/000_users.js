@@ -1,9 +1,17 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
+const emojis = [
+  '👀','💋','🐶','🦋','😹'
+];
+
 const userFields = {
   email: faker.internet.email,
   description: faker.lorem.sentences,
+  firstname: faker.name.firstName,
+  lastname: faker.name.lastName,
+  username: faker.internet.userName,
+  emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
   scope: 'user',
 };
 
