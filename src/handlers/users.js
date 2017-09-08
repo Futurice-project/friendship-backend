@@ -8,6 +8,8 @@ import {
   dbDelUser,
   dbUpdateUser,
   dbCreateUser,
+  dbGetEmailVerification,
+  dbDelVerificationHash
 } from '../models/users';
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
@@ -85,3 +87,23 @@ export const registerUser = (request, reply) =>
         reply(Boom.badImplementation(err));
       }
     });
+
+//check if the hash value exists in the db
+//and verify the user that matches (active=true)
+export const verifyUser = (request, reply) => {
+  dbGetEmailVerification(request.params.hash)
+    .then(data => {
+      const fields = {
+        active: true
+      };
+      console.log('Owner Id: ', data.ownerId);
+      dbDelVerificationHash(data.ownerId).then(() => {
+        return dbUpdateUser(data.ownerId, fields).then(reply)
+      }).catch(err => reply(Boom.conflict('This verification link is expired')))
+    }).catch(err => {
+
+      console.log(err)
+      reply(Boom.conflict('This verification link is expired'));
+  });
+};
+

@@ -5,6 +5,11 @@ const userListFields = ['id', 'email'];
 
 export const dbGetUsers = () => knex('users').select(userListFields);
 
+export const dbGetEmailVerification = hash =>
+  knex('email_verification')
+    .first()
+    .where({ hash });
+
 export const dbGetUser = id =>
   knex('users')
     .first()
@@ -20,6 +25,13 @@ export const dbDelUser = id =>
   knex('users')
     .where({ id })
     .del();
+
+export const dbDelVerificationHash = ownerId => {
+  console.log(ownerId)
+  return knex('email_verification')
+    .where({ ownerId })
+    .del();
+}
 
 export const dbCreateUser = ({ password, ...fields }) =>
   knex.transaction(async trx => {
