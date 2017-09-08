@@ -20,7 +20,7 @@
   "scripts": {
     "start": "npm run build && node dist/backend_kit.js",
     "build": "mkdir -p dist && babel src --out-dir dist --source-maps",
-    "watch": "NODE_ENV=development nodemon --exec babel-node src/backend_kit.js",
+    "watch": "cross-env NODE_ENV=development nodemon --exec babel-node src/backend_kit.js",
     "register:admin": "babel-node bin/register_admin.js",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
@@ -52,6 +52,7 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.4.1",
     "boom": "^5.1.0",
+    "cross-env": "^5.0.5",
     "dotenv": "^4.0.0",
     "faker": "^4.1.0",
     "fs-sync": "^1.0.2",
