@@ -14,7 +14,7 @@ const schema = {
 };
 
 console.log('WARNING! This will wipe the database at:');
-console.log(config.db);
+console.log(config.db.development);
 console.log('Are you sure? (y/n)');
 prompt.start();
 
@@ -28,8 +28,7 @@ prompt.get(schema, (err, result) => {
     process.exit(1);
   }
 
-  knex.raw('DROP SCHEMA public CASCADE; CREATE SCHEMA public;')
-  .then(() => {
+  knex.raw('DROP SCHEMA public CASCADE; CREATE SCHEMA public;').then(() => {
     console.log('Successfully wiped database.');
     process.exit(0);
   });
