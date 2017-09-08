@@ -8,9 +8,6 @@
     "type": "git",
     "url": "git+https://github.com/FruitieX/backend-kit.git"
   },
-  "engines": {
-    "node": "6.2.0"
-  },
   "keywords": [
     "Node",
     "Postgres",
