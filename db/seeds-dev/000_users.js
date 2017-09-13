@@ -12,7 +12,7 @@ const compatibilities = [
 const userFields = {
   email: faker.internet.email,
   description: faker.lorem.sentences,
-  nickname: faker.internet.userName,
+  username: faker.internet.userName,
   emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
   compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
   scope: 'user',

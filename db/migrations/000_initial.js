@@ -14,7 +14,7 @@ exports.up = knex =>
         .notNullable()
         .unique();
       table.text('description');
-      table.text('nickname');
+      table.text('username');
       table.text('emoji');
       table.binary('image');
       table.text('compatibility');
