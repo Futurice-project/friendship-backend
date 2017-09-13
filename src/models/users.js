@@ -1,4 +1,6 @@
 import knex from '../utils/db';
+import { sendVerificationEmail } from '../utils/email';
+
 const crypto = require('crypto');
 
 const userListFields = ['id', 'email'];
@@ -26,15 +28,13 @@ export const dbDelUser = id =>
     .where({ id })
     .del();
 
-export const dbDelVerificationHash = ownerId => {
-  console.log(ownerId)
-  return knex('email_verification')
+export const dbDelVerificationHash = ownerId =>
+  knex('email_verification')
     .where({ ownerId })
     .del();
-}
 
 export const dbCreateUser = ({ password, ...fields }) =>
-  knex.transaction(async trx => {
+  knex.transaction(async (trx) => {
     const user = await trx('users')
       .insert(fields)
       .returning('*')
@@ -43,12 +43,18 @@ export const dbCreateUser = ({ password, ...fields }) =>
     await trx('secrets').insert({
       ownerId: user.id,
       password,
-    });
+    }).then();
+
+    // console.log('Creating Hash');
+    const hash = crypto.randomBytes(48).toString('hex');
 
     await trx('email_verification').insert({
       ownerId: user.id,
-      hash: crypto.randomBytes(48).toString('hex')
-    });
+      hash,
+    }).then(() => console.log(hash));
+
+    // console.log('Sending Hash Email now to', user.email);
+    sendVerificationEmail(hash, user.email);
 
     return user;
   });

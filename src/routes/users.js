@@ -9,7 +9,7 @@ import {
   delUser,
   authUser,
   registerUser,
-  verifyUser
+  verifyUser,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -86,8 +86,8 @@ const users = [
   {
     method: 'GET',
     path: '/users/verify/{hash}',
-    handler: verifyUser
-  }
+    handler: verifyUser,
+  },
 ];
 
 export default users;

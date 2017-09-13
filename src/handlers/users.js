@@ -9,8 +9,9 @@ import {
   dbUpdateUser,
   dbCreateUser,
   dbGetEmailVerification,
-  dbDelVerificationHash
+  dbDelVerificationHash,
 } from '../models/users';
+
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
 export const getUser = (request, reply) =>
@@ -80,7 +81,7 @@ export const registerUser = (request, reply) =>
         scope: 'user',
       }).then(reply),
     )
-    .catch(err => {
+    .catch((err) => {
       if (err.constraint === 'users_email_unique') {
         reply(Boom.conflict('Account already exists'));
       } else {
@@ -92,18 +93,15 @@ export const registerUser = (request, reply) =>
 //and verify the user that matches (active=true)
 export const verifyUser = (request, reply) => {
   dbGetEmailVerification(request.params.hash)
-    .then(data => {
+    .then((data) => {
       const fields = {
-        active: true
+        active: true,
       };
-      console.log('Owner Id: ', data.ownerId);
-      dbDelVerificationHash(data.ownerId).then(() => {
-        return dbUpdateUser(data.ownerId, fields).then(reply)
-      }).catch(err => reply(Boom.conflict('This verification link is expired')))
-    }).catch(err => {
-
-      console.log(err)
+      dbDelVerificationHash(data.ownerId).then(() =>
+        dbUpdateUser(data.ownerId, fields).then(reply),
+      ).catch(() => reply(Boom.conflict('This verification link is expired')));
+    }).catch(() => {
       reply(Boom.conflict('This verification link is expired'));
-  });
+    });
 };
 
