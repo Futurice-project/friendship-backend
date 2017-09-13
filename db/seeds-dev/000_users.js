@@ -2,7 +2,11 @@ const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
 const emojis = [
-  '👀','💋','🐶','🦋','😹'
+  '👀','💋','🐶','🦋','😹', '😘', '🤡', '😈', '🤠', '👻'
+];
+
+const compatibilities = [
+  '54 %', '46 %', '23 %', '98 %', '98 %', '21 %', '76 %'
 ];
 
 const userFields = {
@@ -12,6 +16,7 @@ const userFields = {
   lastname: faker.name.lastName,
   username: faker.internet.userName,
   emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
+  compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
   scope: 'user',
 };
 

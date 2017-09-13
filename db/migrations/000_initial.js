@@ -16,6 +16,7 @@ exports.up = knex => (
       table.text('username');
       table.text('emoji');
       table.binary('image');
+      table.text('compatibility');
     })
 
     /**
