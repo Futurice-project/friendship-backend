@@ -8,9 +8,6 @@
     "type": "git",
     "url": "git+https://github.com/FruitieX/backend-kit.git"
   },
-  "engines": {
-    "node": "6.2.0"
-  },
   "keywords": [
     "Node",
     "Postgres",
@@ -20,17 +17,24 @@
   "scripts": {
     "start": "npm run build && node dist/backend_kit.js",
     "build": "mkdir -p dist && babel src --out-dir dist --source-maps",
-    "watch": "NODE_ENV=development nodemon --exec babel-node src/backend_kit.js",
+    "watch": "cross-env NODE_ENV=development nodemon --exec babel-node src/backend_kit.js",
     "register:admin": "babel-node bin/register_admin.js",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "test": "jest",
     "test:watch": "jest --watch",
-    "db:migrate": "babel-node node_modules/.bin/knex --knexfile db/knexfile.js migrate:latest",
-    "db:rollback": "babel-node node_modules/.bin/knex --knexfile db/knexfile.js migrate:rollback",
-    "db:seed": "babel-node node_modules/.bin/knex --knexfile db/knexfile.js seed:run",
+    "db:migrate": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:latest",
+    "db:rollback": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:rollback",
+    "db:seed": "node_modules/.bin/knex --knexfile db/knexfile.js seed:run",
     "db:wipe": "babel-node bin/wipe_db.js",
-    "db:init": "npm run db:wipe && npm run db:migrate && npm run db:seed"
+    "db:init": "npm run db:wipe && npm run db:migrate && npm run db:seed",
+    "prettier": "prettier --single-quote --trailing-comma all --write \"{,!(dist|node_modules)/**/}*.js\""
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --trailing-comma all --write",
+      "git add"
+    ]
   },
   "version": "0.0.1",
   "main": "src/server.js",
@@ -41,9 +45,11 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015-node": "^6.1.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",
     "boom": "^5.2.0",
+    "cross-env": "^5.0.5",
     "dotenv": "^4.0.0",
     "faker": "^4.1.0",
     "fs-sync": "^1.0.4",
@@ -77,10 +83,13 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
+    "husky": "^0.14.3",
     "jest": "^20.0.4",
     "lab": "^14.1.0",
     "lab-babel": "^1.1.1",
+    "lint-staged": "^4.1.3",
     "mock-knex": "^0.3.7",
-    "nodemon": "^1.9.2"
+    "nodemon": "^1.9.2",
+    "prettier": "^1.6.1"
   }
 }

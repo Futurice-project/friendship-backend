@@ -6,7 +6,7 @@ import config from './config';
 // Use ssl by default
 // pg.defaults.ssl = true;
 
-export default knex(config.db);
+export default knex(config.db.development);
 
 /**
  * Builds SQL query with given filter object.
@@ -20,7 +20,7 @@ export default knex(config.db);
  *     email: '@bar.com'
  *   }))
  */
-export const likeFilter = (filters, anyField = false) => (origQuery) => {
+export const likeFilter = (filters, anyField = false) => origQuery => {
   let q = origQuery;
 
   if (!filters) {
@@ -30,13 +30,22 @@ export const likeFilter = (filters, anyField = false) => (origQuery) => {
   Object.keys(filters).forEach((key, index) => {
     if (!index) {
       // first field with .whereRaw()
-      q = q.whereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [key, filters[key]]);
+      q = q.whereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [
+        key,
+        filters[key],
+      ]);
     } else if (anyField) {
       // if anyField true, additional fields use .orWhereRaw() (any field must match)
-      q = q.orWhereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [key, filters[key]]);
+      q = q.orWhereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [
+        key,
+        filters[key],
+      ]);
     } else {
       // by default additional fields use .andWhereRaw() (all fields must match)
-      q = q.andWhereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [key, filters[key]]);
+      q = q.andWhereRaw("LOWER(??) LIKE '%' || LOWER(?) || '%'", [
+        key,
+        filters[key],
+      ]);
     }
   });
 
