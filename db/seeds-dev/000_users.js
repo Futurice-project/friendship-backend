@@ -1,13 +1,9 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
-const emojis = [
-  '👀','💋','🐶','🦋','😹', '😘', '🤡', '😈', '🤠', '👻'
-];
+const emojis = ['👀', '💋', '🐶', '🦋', '😹', '😘', '🤡', '😈', '🤠', '👻'];
 
-const compatibilities = [
-  '54 %', '46 %', '23 %', '98 %', '98 %', '21 %', '76 %'
-];
+const compatibilities = ['54 %', '46 %', '23 %', '98 %', '98 %', '21 %', '76 %'];
 
 const userFields = {
   email: faker.internet.email,
@@ -26,12 +22,12 @@ exports.seed = knex =>
   knex('users')
     // Generate one test admin user
     .insert(
-      {
-        ...simpleFixtures.generateFixture(userFields),
+    {
+      ...simpleFixtures.generateFixture(userFields),
 
-        email: 'foo@bar.com',
-        scope: 'admin',
-      },
+      email: 'foo@bar.com',
+      scope: 'admin',
+    },
       'id',
     )
     .then(ids => ids[0]) // Return first (only) user id

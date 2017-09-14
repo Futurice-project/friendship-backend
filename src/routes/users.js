@@ -9,6 +9,7 @@ import {
   delUser,
   authUser,
   registerUser,
+  getUserByUsername,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -39,6 +40,14 @@ const users = [
     path: '/users',
     config: getAuthWithScope('user'),
     handler: getUsers,
+  },
+
+  // Get info about a specific user by username
+  {
+    method: 'GET',
+    path: '/users/search/{username}',
+    config: getAuthWithScope('user'),
+    handler: getUserByUsername,
   },
 
   // Get info about a specific user

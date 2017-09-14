@@ -9,6 +9,10 @@ export const dbGetUser = id =>
     .first()
     .where({ id });
 
+export const dbGetUserByUsername = username =>
+  knex('users')
+    .where({ username });
+
 export const dbUpdateUser = (id, fields) =>
   knex('users')
     .update({ ...fields })
