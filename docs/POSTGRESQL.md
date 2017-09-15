@@ -29,3 +29,10 @@ Fixing `FATAL: Peer authentication failed for user "postgres"`:
   ```
   sudo systemctl restart postgresql.service
   ```
+  
+Fixing `'psql' command is not recognized on windows`:
+* Make sure the right system PATH variables are set for psql.  
+  computer => properties => advanced system settings=> Environment Variables => System Variables then search for path
+
+* For windows, --user does not work, use --username
+
