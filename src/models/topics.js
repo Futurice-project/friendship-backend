@@ -8,3 +8,13 @@ export const dbGetTopic = id =>
   knex('topics')
     .first()
     .where({ id });
+
+export const dbCreateTopic= ({ ...fields }) =>
+  knex.transaction(async (trx) => {
+    const topic = await trx('topics')
+      .insert(fields)
+      .returning('*')
+      .then(results => results[0]); // return only first result
+
+    return topic;
+  });

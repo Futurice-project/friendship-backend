@@ -4,8 +4,17 @@ import Joi from 'joi';
 import { getAuthWithScope, doAuth } from '../utils/auth';
 import {
   getTopics,
-  getTopic
+  getTopic,
+  addTopic
 } from '../handlers/topics';
+
+const validateRegistrationFields = {
+  validate: {
+    payload: {
+      name: Joi.string()
+    },
+  },
+};
 
 const topics = [
   // Get a list of all topics
@@ -21,6 +30,13 @@ const topics = [
     path: '/topics/{topicId}',
     config: getAuthWithScope('user'),
     handler: getTopic,
+  },
+  // Register new topic
+  {
+    method: 'POST',
+    path: '/topics',
+    config: validateRegistrationFields,
+    handler: addTopic,
   },
 ];
 

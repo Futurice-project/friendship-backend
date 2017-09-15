@@ -8,7 +8,7 @@ exports.up = knex => (
     .createTableIfNotExists('topics', (table) => {
       table.increments('id').primary;
       table
-        .text('name');
+        .text('name').unique();
     })
 
     .createTableIfNotExists('user-topic', (table) => {
