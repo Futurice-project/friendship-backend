@@ -6,7 +6,8 @@ import {
   getTopics,
   getTopic,
   addTopic,
-  delTopic
+  delTopic,
+  updateTopic
 } from '../handlers/topics';
 
 const validateRegistrationFields = {
@@ -46,6 +47,14 @@ const topics = [
     config: getAuthWithScope('admin'),
     handler: delTopic,
   },
+  // Update topic, admin only
+  {
+    method: 'PATCH',
+    path: '/topics/{topicId}',
+    config: getAuthWithScope('admin'),
+    handler: updateTopic,
+  },
+
 ];
 
 export default topics;

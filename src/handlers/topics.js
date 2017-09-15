@@ -4,7 +4,8 @@ import {
   dbGetTopics,
   dbGetTopic,
   dbCreateTopic,
-  dbDelTopic
+  dbDelTopic,
+  dbUpdateTopic
 } from '../models/topics';
 
 export const getTopics = (request, reply) => dbGetTopics().then(reply);
@@ -21,3 +22,11 @@ export const addTopic = (request, reply) =>
 export const delTopic = (request, reply) => {
   return dbDelTopic(request.params.topicId).then(reply);
 };
+
+export const updateTopic = async (request, reply) => {
+  const fields = {
+   name: request.payload.name
+  };
+
+  return dbUpdateTopic(request.params.topicId, fields).then(reply);
+}

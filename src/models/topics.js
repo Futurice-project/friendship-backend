@@ -24,3 +24,9 @@ export const dbDelTopic = id =>
     .where({ id })
     .del();
 
+export const dbUpdateTopic = (id, fields) =>
+  knex('topics')
+    .update({ ...fields })
+    .where({ id })
+    .returning('*');
+
