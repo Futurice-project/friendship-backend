@@ -7,6 +7,12 @@ const server = email.server.connect({
   ssl: true,
 });
 
+
+/**
+ * Send verification email to an email adress
+ * @param {String} hash - That is used in the verification link
+ * @param {String} toEmail
+ */
 export const sendVerificationEmail = (emailHash, toEmail) => {
   const message = {
     text: `Please verify your email from FriendShip App: http://localhost:3888/users/verify/${emailHash}`,
