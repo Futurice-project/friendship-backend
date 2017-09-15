@@ -9,15 +9,15 @@ exports.up = knex =>
       table.increments('id').primary();
       table.timestamp('createdAt').defaultTo(knex.fn.now());
       table.enum('scope', ['admin', 'user']).notNullable();
-      table
-        .text('email')
-        .notNullable()
-        .unique();
+      table.text('email').notNullable().unique();
       table.text('description');
       table.text('username');
-      table.text('emoji');
+      table.text('emoji'); // @TODO: This should be a binary image called 'mood', create a table 'emojis' for this later and make a reference
       table.binary('image');
       table.text('compatibility');
+      table.text('location');
+      table.boolean('enableMatching');
+      table.date('birthday');
     })
     /**
      * Define a separate table for storing user secrets (such as password hashes).
