@@ -11,7 +11,7 @@ export const dbGetUser = id =>
 
 export const dbGetUserByUsername = username =>
   knex('users')
-    .where({ username });
+    .where('username', 'like', `%${username}%`);
 
 export const dbUpdateUser = (id, fields) =>
   knex('users')
