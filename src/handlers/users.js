@@ -8,7 +8,10 @@ import {
   dbDelUser,
   dbUpdateUser,
   dbCreateUser,
+  dbGetEmailVerification,
+  dbDelVerificationHash,
 } from '../models/users';
+
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
 export const getUser = (request, reply) =>
@@ -78,10 +81,27 @@ export const registerUser = (request, reply) =>
         scope: 'user',
       }).then(reply),
     )
-    .catch(err => {
+    .catch((err) => {
       if (err.constraint === 'users_email_unique') {
         reply(Boom.conflict('Account already exists'));
       } else {
         reply(Boom.badImplementation(err));
       }
     });
+
+//check if the hash value exists in the db
+//and verify the user that matches (active=true)
+export const verifyUser = (request, reply) => {
+  dbGetEmailVerification(request.params.hash)
+    .then((data) => {
+      const fields = {
+        active: true,
+      };
+      dbDelVerificationHash(data.ownerId).then(() =>
+        dbUpdateUser(data.ownerId, fields).then(reply),
+      ).catch(() => reply(Boom.conflict('This verification link is expired')));
+    }).catch(() => {
+      reply(Boom.conflict('This verification link is expired'));
+    });
+};
+

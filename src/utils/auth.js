@@ -45,7 +45,11 @@ export const comparePasswords = (passwordAttempt, user) =>
   new Promise((resolve, reject) =>
     bcrypt.compare(passwordAttempt, user.password, (err, isValid) => {
       if (!err && isValid) {
-        resolve(user);
+          if(user.active){
+              resolve(user);
+          }else{
+              reject(`The user with email '${user.email}' is not activated`)
+          }
       } else {
         reject(`Incorrect password attempt by user with email '${user.email}'`);
       }
@@ -76,9 +80,14 @@ export const preVerifyCredentials = (
       return comparePasswords(passwordAttempt, user);
     })
     .then(reply)
-    .catch(() => {
+    .catch((err) => {
       // TODO: log err to server console
-      reply(Boom.unauthorized('Incorrect email or password!'));
+      // TODO: This is dirty but Futurice told me to do this ;)
+      // TODO: Please think of a better way to do this
+      if(err.valueOf().includes('activated')){
+        return reply(Boom.unauthorized(err));
+      }
+      return reply(Boom.unauthorized('Incorrect email or password!'));
     });
 
 // Hapi route config which performs user authentication
@@ -89,6 +98,7 @@ export const doAuth = {
       password: Joi.string().required(),
     },
     failAction: (request, reply) =>
+
       reply(Boom.unauthorized('Incorrect email or password!')),
   },
   pre: [{ method: preVerifyCredentials, assign: 'user' }],

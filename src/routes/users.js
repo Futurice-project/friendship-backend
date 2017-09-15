@@ -9,6 +9,7 @@ import {
   delUser,
   authUser,
   registerUser,
+  verifyUser,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -79,6 +80,13 @@ const users = [
     path: '/users',
     config: validateRegistrationFields,
     handler: registerUser,
+  },
+
+  // Verify a new user using a hash e-mail link
+  {
+    method: 'GET',
+    path: '/users/verify/{hash}',
+    handler: verifyUser,
   },
 ];
 
