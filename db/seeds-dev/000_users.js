@@ -22,13 +22,12 @@ const dummyPassword =
 exports.seed = knex =>
   knex('users')
     // Generate one test admin user
-    .insert(
-      {
-        ...simpleFixtures.generateFixture(userFields),
-        active: true,
-        email: 'foo@bar.com',
-        scope: 'admin',
-      },
+    .insert({
+      ...simpleFixtures.generateFixture(userFields),
+      active: true,
+      email: 'foo@bar.com',
+      scope: 'admin',
+    },
       'id',
     )
     .then(ids => ids[0]) // Return first (only) user id
