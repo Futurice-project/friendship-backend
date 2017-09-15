@@ -5,7 +5,7 @@ exports.up = knex =>
      *
      * Contains info on all users in the system
      */
-    .createTableIfNotExists('users', table => {
+    .createTableIfNotExists('users', (table) => {
       table.increments('id').primary();
       table.timestamp('createdAt').defaultTo(knex.fn.now());
       table.enum('scope', ['admin', 'user']).notNullable();
@@ -14,7 +14,10 @@ exports.up = knex =>
         .notNullable()
         .unique();
       table.text('description');
+      table.text('username');
+      table.text('emoji');
       table.binary('image');
+      table.text('compatibility');
     })
     /**
      * Define a separate table for storing user secrets (such as password hashes).
@@ -27,7 +30,7 @@ exports.up = knex =>
      *
      * You may want to store other user secrets in this table as well.
      */
-    .createTableIfNotExists('secrets', table => {
+    .createTableIfNotExists('secrets', (table) => {
       table
         .integer('ownerId')
         .references('id')

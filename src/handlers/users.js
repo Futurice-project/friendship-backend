@@ -10,12 +10,15 @@ import {
   dbCreateUser,
   dbGetEmailVerification,
   dbDelVerificationHash,
+  dbGetUserByUsername,
 } from '../models/users';
-
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
 export const getUser = (request, reply) =>
   dbGetUser(request.params.userId).then(reply);
+
+export const getUserByUsername = (request, reply) =>
+  dbGetUserByUsername(request.params.username).then(reply);
 
 export const delUser = (request, reply) => {
   if (

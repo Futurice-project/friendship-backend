@@ -3,7 +3,7 @@ import { sendVerificationEmail } from '../utils/email';
 
 const crypto = require('crypto');
 
-const userListFields = ['id', 'email'];
+const userListFields = ['id', 'email', 'username', 'description', 'emoji', 'compatibility'];
 
 export const dbGetUsers = () => knex('users').select(userListFields);
 
@@ -16,6 +16,10 @@ export const dbGetUser = id =>
   knex('users')
     .first()
     .where({ id });
+
+export const dbGetUserByUsername = username =>
+  knex('users')
+    .where('username', 'like', `%${username}%`);
 
 export const dbUpdateUser = (id, fields) =>
   knex('users')
