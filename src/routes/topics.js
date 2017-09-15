@@ -5,7 +5,8 @@ import { getAuthWithScope, doAuth } from '../utils/auth';
 import {
   getTopics,
   getTopic,
-  addTopic
+  addTopic,
+  delTopic
 } from '../handlers/topics';
 
 const validateRegistrationFields = {
@@ -37,6 +38,13 @@ const topics = [
     path: '/topics',
     config: validateRegistrationFields,
     handler: addTopic,
+  },
+  // Delete a topic, admin only
+  {
+    method: 'DELETE',
+    path: '/topics/{topicId}',
+    config: getAuthWithScope('admin'),
+    handler: delTopic,
   },
 ];
 

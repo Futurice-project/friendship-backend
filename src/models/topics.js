@@ -18,3 +18,9 @@ export const dbCreateTopic= ({ ...fields }) =>
 
     return topic;
   });
+
+export const dbDelTopic = id =>
+  knex('topics')
+    .where({ id })
+    .del();
+

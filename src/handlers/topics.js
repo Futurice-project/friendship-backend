@@ -3,7 +3,8 @@ import Boom from 'boom';
 import {
   dbGetTopics,
   dbGetTopic,
-  dbCreateTopic
+  dbCreateTopic,
+  dbDelTopic
 } from '../models/topics';
 
 export const getTopics = (request, reply) => dbGetTopics().then(reply);
@@ -16,3 +17,7 @@ export const addTopic = (request, reply) =>
     ...request.payload,
     name: request.payload.name
   }).then(reply);
+
+export const delTopic = (request, reply) => {
+  return dbDelTopic(request.params.topicId).then(reply);
+};
