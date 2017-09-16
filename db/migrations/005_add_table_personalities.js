@@ -7,9 +7,9 @@ exports.up = knex =>
   knex.schema
     .createTableIfNotExists('personalities', (table) => {
       table.increments('id').primary();
-      table.text('name').notNullable();
+      table.text('name').notNullable().unique();
     })
-    .createTableIfNotExists('user-personality', (table) => {
+    .createTableIfNotExists('user_personality', (table) => {
       table.increments('id').primary();
       table
           .integer('userId')
@@ -23,10 +23,9 @@ exports.up = knex =>
           .notNullable()
           .references('id')
           .inTable('personalities');
-      // check constraint for level?? raw query?
       table.integer('level').notNullable();
     }).then(() =>
-      knex.raw('ALTER TABLE "user-personality" ADD constraint levelCheck CHECK (level > 0 AND level < 6)'));
+      knex.raw('ALTER TABLE "user_personality" ADD constraint levelCheck CHECK (level > 0 AND level < 6)'));
 
 exports.down = knex =>
   knex.schema

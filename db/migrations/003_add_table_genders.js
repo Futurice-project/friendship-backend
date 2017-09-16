@@ -5,10 +5,10 @@ exports.up = knex => (
   knex.schema
     .createTableIfNotExists('genders', (table) => {
       table
-            .integer('ownerId')
-            .references('id')
-            .inTable('users')
-            .primary();
+        .integer('ownerId')
+        .references('id')
+        .inTable('users')
+        .primary();
       table.text('gender').notNullable();
     })
 );

@@ -4,13 +4,13 @@
  */
 exports.up = knex => (
   knex.schema
-    .createTableIfNotExists('email_verification', table => {
-        table
-            .integer('ownerId')
-            .references('id')
-            .inTable('users')
-            .primary();
-        table.text('hash').notNullable();
+    .createTableIfNotExists('email_verification', (table) => {
+      table
+        .integer('ownerId')
+        .references('id')
+        .inTable('users')
+        .primary();
+      table.text('hash').notNullable();
     })
 );
 
