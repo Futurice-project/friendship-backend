@@ -1,6 +1,7 @@
 import knex from '../utils/db';
 
 const personalityFields = ['id', 'name'];
+const userPersonalityFields = ['id', 'userId', 'personalityId', 'level'];
 
 export const dbGetPersonalities = () => knex('personalities').select(personalityFields);
 
@@ -28,6 +29,11 @@ export const dbCreatePersonality = ({ ...fields }) =>
       .returning('*')
       .then(results => results[0]),
   );
+
+export const dbGetUserPersonalities = userId =>
+  knex('user_personality')
+    .select(userPersonalityFields)
+    .where({ userId });
 
 export const dbCreateUserPersonality = ({ ...fields }) =>
   knex.transaction(trx =>

@@ -4,6 +4,7 @@ import {
   delPersonality,
   updatePersonality,
   createPersonality,
+  getUserPersonalities,
   createUserPersonality,
 } from '../handlers/personalities';
 import { getAuthWithScope } from '../utils/auth';
@@ -49,15 +50,25 @@ const personalities = [
     handler: createPersonality,
   },
 
+
+  // get all user personalities
+  {
+    method: 'GET',
+    path: '/user_personality/{userId}',
+    config: getAuthWithScope('user'),
+    handler: getUserPersonalities,
+  },
+
   // Create new user_personality
   // Need to check if user is editing his/her own profile
-  // Checking userId to match with request.userId
-  // Check if personalityId is correct
-  // 
+  // Checking userId to match with request.userId (done)
+  // Check if personalityId is correct (constraint check)
+  // Check if the field is already there (userId and personalityId) 
+  // now it can be inserted more than once
   {
     method: 'POST',
     path: '/user_personality',
-    // config: getAuthWithScope('user'),
+    config: getAuthWithScope('user'),
     handler: createUserPersonality,
   },
 ];

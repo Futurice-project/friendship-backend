@@ -6,6 +6,7 @@ import {
   dbUpdatePersonality,
   dbDelPersonality,
   dbCreatePersonality,
+  dbGetUserPersonalities,
   dbCreateUserPersonality,
 } from '../models/personalities';
 
@@ -46,7 +47,7 @@ export const updatePersonality = async (request, reply) => {
   return dbUpdatePersonality(request.params.personalityId, fields).then(reply);
 };
 
-export const createPersonality = (request, reply) => {
+export const createPersonality = (request, reply) =>
   dbCreatePersonality({
     ...request.payload,
     name: request.payload.name,
@@ -54,10 +55,25 @@ export const createPersonality = (request, reply) => {
   .then(reply)
   .catch(err => reply(Boom.badImplementation(err)),
   );
-};
+
+export const getUserPersonalities = (request, reply) =>
+  dbGetUserPersonalities(request.params.userId).then(reply);
 
 export const createUserPersonality = (request, reply) => {
-  dbCreateUserPersonality({
+  console.log(request.pre);
+  console.log(request.payload);
+  console.log(request.pre.user.id);
+  console.log(request.payload.userId);
+  console.log(request.pre.user.id.toString() === request.payload.userId);
+  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
+    return reply(
+      Boom.unauthorized(
+        'Cannot update other users!',
+      ),
+    );
+  }
+
+  return dbCreateUserPersonality({
     ...request.payload,
     userId: request.payload.userId,
     personalityId: request.payload.personalityId,
