@@ -20,13 +20,6 @@ export const dbDelPersonality = id =>
     .where({ id })
     .del();
 
-// export const dbCreatePersonality = name =>
-//   knex.transaction((trx) => {
-//     const personality = { name };
-//     return trx.insert(personality).into('personalities');
-//   }).then(() => console.log('Done'))
-//   .catch(error => console.log(error));
-
 export const dbCreatePersonality = ({ ...fields }) =>
   knex.transaction(trx =>
     knex('personalities')
@@ -36,6 +29,11 @@ export const dbCreatePersonality = ({ ...fields }) =>
       .then(results => results[0]),
   );
 
-// export const dbCreatePersonality = name =>
-//   knex('personalities')
-//     .insert({ name })
+export const dbCreateUserPersonality = ({ ...fields }) =>
+  knex.transaction(trx =>
+    knex('user_personality')
+      .transacting(trx)
+      .insert(fields)
+      .returning('*')
+      .then(results => results[0]),
+  );

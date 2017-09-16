@@ -6,7 +6,7 @@
 exports.up = knex =>
   knex.schema
     .createTableIfNotExists('personalities', (table) => {
-      table.increments('id').primary();
+      table.increments('id').primary().onDelete('CASCADE');
       table.text('name').notNullable().unique();
     })
     .createTableIfNotExists('user_personality', (table) => {
