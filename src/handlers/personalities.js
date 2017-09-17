@@ -18,8 +18,6 @@ export const getPersonality = (request, reply) =>
 // delete this will affect FK in user_personality --> ask Futurice?
 // cannot use at the moment --> need to drop cascade
 export const delPersonality = (request, reply) => {
-  console.log('Request Pre: ', request.pre);
-  console.log('Request Params: ', request.params);
   if (
     request.pre.user.scope !== 'admin' &&
     request.pre.user.id !== request.params.userId
@@ -60,11 +58,6 @@ export const getUserPersonalities = (request, reply) =>
   dbGetUserPersonalities(request.params.userId).then(reply);
 
 export const createUserPersonality = (request, reply) => {
-  console.log(request.pre);
-  console.log(request.payload);
-  console.log(request.pre.user.id);
-  console.log(request.payload.userId);
-  console.log(request.pre.user.id.toString() === request.payload.userId);
   if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
     return reply(
       Boom.unauthorized(
