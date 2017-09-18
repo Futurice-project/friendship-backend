@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { getAuthWithScope, doAuth } from '../utils/auth';
 import {
   getUsers,
+  getUsersBatch,
   getUser,
   updateUser,
   delUser,
@@ -34,6 +35,16 @@ const validateRegistrationFields = {
   },
 };
 
+const validatePageNumber = {
+  validate: {
+    params: {
+      pageNumber: Joi.number()
+        .integer()
+        .required(),
+    },
+  },
+};
+
 const users = [
   // Get a list of all users
   {
@@ -42,6 +53,15 @@ const users = [
     config: getAuthWithScope('user'),
     handler: getUsers,
   },
+
+  // Get a list of users in batches. Used with infinite scroller
+  // Starts with page 0 lol
+    {
+      method: 'GET',
+      path: '/users/page/{pageNumber}',
+      config: merge({}, validatePageNumber, getAuthWithScope('user')),
+      handler: getUsersBatch,
+    },
 
   // Get info about a specific user by username
   {
