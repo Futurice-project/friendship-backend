@@ -7,7 +7,7 @@ import {
   dbDelTopic,
   dbUpdateTopic,
   dbCreateUserTopic,
-  dbDelUserTopic
+  dbDelUserTopic,
 } from '../models/topics';
 
 export const getTopics = (request, reply) => dbGetTopics().then(reply);
@@ -21,17 +21,26 @@ export const addTopic = (request, reply) =>
     name: request.payload.name
   }).then(reply);
 
+  // delete this will affect FK in user_personality --> ask Futurice?
 export const delTopic = (request, reply) => {
   return dbDelTopic(request.params.topicId).then(reply);
 };
 
 export const updateTopic = async (request, reply) => {
+  if (request.pre.user.scopre !== 'admin') {
+    return reply(
+      Boom.unauthorized(
+        'Unprivileged users cannot update personality',
+      ),
+    );
+  }
+
   const fields = {
-   name: request.payload.name
+    name: request.payload.name,
   };
 
   return dbUpdateTopic(request.params.topicId, fields).then(reply);
-}
+};
 
 /**
  * Use the userId of current user (get it trough the token) and adds a new topic to the user with a love value of either true or false
@@ -39,12 +48,30 @@ export const updateTopic = async (request, reply) => {
  * @param request.payload.topicId The topicId that has to be added to a certain user
  * @param reply
  */
-export const addTopicToUser = (request, reply) =>
-  dbCreateUserTopic({
+export const addTopicToUser = (request, reply) => {
+  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
+    return reply(
+      Boom.unauthorized(
+        'Cannot update other users!',
+      ),
+    );
+  }
+
+  return dbCreateUserTopic({
     ...request.payload,
+    userId: request.payload.userId,
     topicId: request.payload.topicId,
-    love: request.payload.love
-  }).then(reply);
+    love: request.payload.love,
+  })
+  .then(reply)
+  .catch((err) => {
+    if (err.constraint) {
+      reply(Boom.conflict('Constraint Error: ', err));
+    } else {
+      reply(Boom.badImplementation(err));
+    }
+  });
+};
 
 // Delete a topic that is connected to a user
 export const delUserTopic = (request, reply) => {

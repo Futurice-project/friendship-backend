@@ -9,7 +9,7 @@ import {
   delTopic,
   updateTopic,
   addTopicToUser,
-  delUserTopic
+  delUserTopic,
 } from '../handlers/topics';
 
 const validateTopicId = {
@@ -18,14 +18,14 @@ const validateTopicId = {
       topicId: Joi.number()
         .integer()
         .required(),
-    }
-  }
-}
+    },
+  },
+};
 
 const validateTopicFields = {
   validate: {
     payload: {
-      name: Joi.string()
+      name: Joi.string(),
     },
   },
 };
@@ -84,16 +84,17 @@ const topics = [
     method: 'POST',
     path: '/user-topic',
     config: merge({}, validateUserTopicFields, getAuthWithScope('user')),
-    handler: addTopicToUser
+    handler: addTopicToUser,
   },
   //  Delete a topic that is connected to a user
-  // @todo check if the OWNER is deleting this, and not another user (somehow we can't to get details of authenticated user, ask rasmus
+  // @todo check if the OWNER is deleting this,
+  // and not another user (somehow we can't to get details of authenticated user, ask rasmus
   {
     method: 'DELETE',
     path: '/user-topic/{topicId}',
     config: merge({}, validateTopicId, getAuthWithScope('user')),
-    handler: delUserTopic
-  }
+    handler: delUserTopic,
+  },
 
 ];
 

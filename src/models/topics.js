@@ -1,7 +1,7 @@
 import knex from '../utils/db';
 
 const topicListFields = ['id', 'name'];
-const userTopicListFields = ['id', 'love'];
+const userTopicListFields = ['userId', 'topicId', 'love'];
 
 export const dbGetTopics = () => knex('topics').select(topicListFields);
 
@@ -10,7 +10,7 @@ export const dbGetTopic = id =>
     .first()
     .where({ id });
 
-export const dbCreateTopic= ({ ...fields }) =>
+export const dbCreateTopic = ({ ...fields }) =>
   knex.transaction(async (trx) => {
     const topic = await trx('topics')
       .insert(fields)
@@ -33,13 +33,13 @@ export const dbUpdateTopic = (id, fields) =>
 
 
 //  Get all topics that a user has chosen to be either loved or hated
-export const dbGetUserTopics= id =>
+export const dbGetUserTopics = id =>
   knex('user-topic')
     .select(userTopicListFields)
     .where({ id });
 
 // Add a new topic that a user loves/hates
-export const dbCreateUserTopic= ({ ...fields }) =>
+export const dbCreateUserTopic = ({ ...fields }) =>
   knex.transaction(async (trx) => {
     const topic = await trx('user-topic')
       .insert(fields)

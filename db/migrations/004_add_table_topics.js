@@ -6,16 +6,16 @@
 exports.up = knex => (
   knex.schema
     .createTableIfNotExists('topics', (table) => {
-      table.increments('id').primary;
+      table.increments('id').primary();
       table
         .text('name').unique();
     })
 
     .createTableIfNotExists('user-topic', (table) => {
-      table.increments().primary;
-      table.boolean('love');
       table.integer('userId').unsigned().references('id').inTable('users');
       table.integer('topicId').unsigned().references('id').inTable('topics');
+      table.boolean('love');
+      table.primary(['userId', 'topicId']);
     })
 );
 

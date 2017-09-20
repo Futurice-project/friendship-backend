@@ -75,7 +75,7 @@ export const createUserPersonality = (request, reply) => {
   .then(reply)
   .catch((err) => {
     if (err.constraint) {
-      reply(Boom.conflict('Constraint Error: ', err.constraint));
+      reply(Boom.conflict('Constraint Error: ', err));
     } else {
       reply(Boom.badImplementation(err));
     }

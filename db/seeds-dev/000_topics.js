@@ -1,17 +1,12 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
-exports.seed = knex =>{
-  var names = [];
-  for(var i=0; i<10; i++){
-    names.push(
-      {
-        name: "Topic" + i
-      }
-    )
-  }
+const topicFields = {
+  name: () => faker.company.catchPhraseNoun() + faker.random.number({ min: 1, max: 99 }),
+};
+
+exports.seed = knex =>
   knex.batchInsert(
     'topics',
-    names
+    simpleFixtures.generateFixtures(topicFields, 10),
   );
-}
