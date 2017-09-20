@@ -5,9 +5,21 @@ const personalityFields = {
   name: () => faker.company.bsAdjective() + faker.random.number({ min: 1, max: 99 }),
 };
 
+let userId = 1;
+let personalityId = 0;
+
 const userPersonalityFields = {
-  userId: () => faker.random.number({ min: 1, max: 10 }),
-  personalityId: () => faker.random.number({ min: 1, max: 10 }),
+  userId: () => {
+    if (personalityId === 10) {
+      userId += 1;
+      personalityId = 0;
+    }
+    return userId;
+  },
+  personalityId: () => {
+    personalityId += 1;
+    return personalityId;
+  },
   level: () => faker.random.number({ min: 1, max: 5 }),
 };
 
@@ -16,10 +28,9 @@ exports.seed = knex =>
     'personalities',
     simpleFixtures.generateFixtures(personalityFields, 10),
   )
-  // not working at the moment due to PK constraint (faker cannot generate unique composite PK)
-  // .then(() =>
-  //   knex.batchInsert(
-  //     'user_personality',
-  //     simpleFixtures.generateFixtures(userPersonalityFields, 10),
-  //   ),
-  // );
+  .then(() =>
+    knex.batchInsert(
+      'user_personality',
+      simpleFixtures.generateFixtures(userPersonalityFields, 100),
+    ),
+  );
