@@ -1,7 +1,7 @@
 import knex from '../utils/db';
 
 const personalityFields = ['id', 'name'];
-const userPersonalityFields = ['id', 'userId', 'personalityId', 'level'];
+const userPersonalityFields = ['userId', 'personalityId', 'level'];
 
 export const dbGetPersonalities = () => knex('personalities').select(personalityFields);
 
