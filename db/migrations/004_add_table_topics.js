@@ -1,6 +1,6 @@
 /**
  * Add table for topics
- * And create tabe user-topic (allows a many to many relation)
+ * And create tabe user_topic (allows a many to many relation)
  * Can be used to send the hash trough e-mail to the user
  */
 exports.up = knex => (
@@ -11,7 +11,7 @@ exports.up = knex => (
         .text('name').unique();
     })
 
-    .createTableIfNotExists('user-topic', (table) => {
+    .createTableIfNotExists('user_topic', (table) => {
       table.integer('userId').unsigned().references('id').inTable('users');
       table.integer('topicId').unsigned().references('id').inTable('topics');
       table.boolean('love');
@@ -25,5 +25,5 @@ exports.up = knex => (
 exports.down = knex => (
   knex.schema
     .table.dropTableIfExists('topics')
-    .table.dropTableIfExists('user-topic')
+    .table.dropTableIfExists('user_topic')
 );

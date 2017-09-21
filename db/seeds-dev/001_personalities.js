@@ -2,7 +2,7 @@ const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
 const personalityFields = {
-  name: () => faker.company.bsAdjective() + faker.random.number({ min: 1, max: 99 }),
+  name: () => faker.company.bsAdjective() + faker.random.number({ min: 1, max: 999 }),
 };
 
 let userId = 1;

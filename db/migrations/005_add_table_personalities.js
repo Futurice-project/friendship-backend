@@ -30,4 +30,4 @@ exports.up = knex =>
 exports.down = knex =>
   knex.schema
     .table.dropTableIfExists('topics')
-    .table.dropTableIfExists('user-topic');
+    .table.dropTableIfExists('user_topic');
