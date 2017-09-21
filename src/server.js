@@ -40,7 +40,7 @@ export default Glue.compose({
       },
     },
   ],
-}).then(server => {
+}).then((server) => {
   server.auth.strategy('jwt', 'jwt', {
     key: config.auth.secret,
     validateFunc: validateJwt,
@@ -51,13 +51,13 @@ export default Glue.compose({
   // server.auth.default('jwt');
 
   // Register routes once auth strategy is set up
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     server.register(
       {
         register: Routes,
         options: { dir: join(__dirname, 'routes') },
       },
-      err => {
+      (err) => {
         Hoek.assert(!err, err);
         resolve(server);
       },

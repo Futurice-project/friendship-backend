@@ -45,11 +45,11 @@ export const comparePasswords = (passwordAttempt, user) =>
   new Promise((resolve, reject) =>
     bcrypt.compare(passwordAttempt, user.password, (err, isValid) => {
       if (!err && isValid) {
-          if(user.active){
-              resolve(user);
-          }else{
-              reject(`The user with email '${user.email}' is not activated`)
-          }
+        if (user.active) {
+          resolve(user);
+        } else {
+          reject(`The user with email '${user.email}' is not activated`);
+        }
       } else {
         reject(`Incorrect password attempt by user with email '${user.email}'`);
       }
@@ -65,7 +65,7 @@ export const preVerifyCredentials = (
     .first()
     .where({ email: email.toLowerCase().trim() })
     .leftJoin('secrets', 'users.id', 'secrets.ownerId')
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return Promise.reject(
           `User with email '${email}' not found in database`,
@@ -84,7 +84,7 @@ export const preVerifyCredentials = (
       // TODO: log err to server console
       // TODO: This is dirty but Futurice told me to do this ;)
       // TODO: Please think of a better way to do this
-      if(err.valueOf().includes('activated')){
+      if (err.valueOf().includes('activated')) {
         return reply(Boom.unauthorized(err));
       }
       return reply(Boom.unauthorized('Incorrect email or password!'));

@@ -20,7 +20,7 @@ export default knex(config.db.development);
  *     email: '@bar.com'
  *   }))
  */
-export const likeFilter = (filters, anyField = false) => origQuery => {
+export const likeFilter = (filters, anyField = false) => (origQuery) => {
   let q = origQuery;
 
   if (!filters) {

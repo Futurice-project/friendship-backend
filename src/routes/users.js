@@ -56,12 +56,12 @@ const users = [
 
   // Get a list of users in batches. Used with infinite scroller
   // Starts with page 0 lol
-    {
-      method: 'GET',
-      path: '/users/page/{pageNumber}',
-      config: merge({}, validatePageNumber, getAuthWithScope('user')),
-      handler: getUsersBatch,
-    },
+  {
+    method: 'GET',
+    path: '/users/page/{pageNumber}',
+    config: merge({}, validatePageNumber, getAuthWithScope('user')),
+    handler: getUsersBatch,
+  },
 
   // Get info about a specific user by username
   {

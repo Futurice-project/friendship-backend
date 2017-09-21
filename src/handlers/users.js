@@ -97,8 +97,8 @@ export const registerUser = (request, reply) =>
       }
     });
 
-//check if the hash value exists in the db
-//and verify the user that matches (active=true)
+// check if the hash value exists in the db
+// and verify the user that matches (active=true)
 export const verifyUser = (request, reply) => {
   dbGetEmailVerification(request.params.hash)
     .then((data) => {
