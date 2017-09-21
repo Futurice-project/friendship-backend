@@ -8,6 +8,7 @@ import {
   addTopic,
   delTopic,
   updateTopic,
+  getUserTopics,
   createUserTopic,
   delUserTopic,
 } from '../handlers/topics';
@@ -78,11 +79,17 @@ const topics = [
     config: merge({}, validateTopicId, getAuthWithScope('admin')),
     handler: updateTopic,
   },
+  {
+    method: 'GET',
+    path: '/user_topic/{userId}',
+    config: getAuthWithScope('user'),
+    handler: getUserTopics,
+  },
   // Add new topic to a user
   // Love is a boolean. True = love, false = hate the topic.
   {
     method: 'POST',
-    path: '/user-topic',
+    path: '/user_topic',
     config: merge({}, validateUserTopicFields, getAuthWithScope('user')),
     handler: createUserTopic,
   },
@@ -91,7 +98,7 @@ const topics = [
   // and not another user (somehow we can't to get details of authenticated user, ask rasmus
   {
     method: 'DELETE',
-    path: '/user-topic/{topicId}',
+    path: '/user_topic/{topicId}',
     config: merge({}, validateTopicId, getAuthWithScope('user')),
     handler: delUserTopic,
   },

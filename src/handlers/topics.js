@@ -7,6 +7,7 @@ import {
   dbDelTopic,
   dbUpdateTopic,
   dbCreateUserTopic,
+  dbGetUserTopics,
   dbDelUserTopic,
 } from '../models/topics';
 
@@ -18,7 +19,7 @@ export const getTopic = (request, reply) =>
 export const addTopic = (request, reply) =>
   dbCreateTopic({
     ...request.payload,
-    name: request.payload.name
+    name: request.payload.name,
   }).then(reply);
 
   // delete this will affect FK in user_personality --> ask Futurice?
@@ -72,6 +73,9 @@ export const createUserTopic = (request, reply) => {
     }
   });
 };
+
+export const getUserTopics = (request, reply) =>
+  dbGetUserTopics(request.params.userId).then(reply);
 
 // Delete a topic that is connected to a user
 export const delUserTopic = (request, reply) => {

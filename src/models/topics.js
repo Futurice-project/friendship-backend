@@ -33,15 +33,15 @@ export const dbUpdateTopic = (id, fields) =>
 
 
 //  Get all topics that a user has chosen to be either loved or hated
-export const dbGetUserTopics = id =>
-  knex('user-topic')
+export const dbGetUserTopics = userId =>
+  knex('user_topic')
     .select(userTopicListFields)
-    .where({ id });
+    .where({ userId });
 
 // Add a new topic that a user loves/hates
 export const dbCreateUserTopic = ({ ...fields }) =>
   knex.transaction(async (trx) => {
-    const topic = await trx('user-topic')
+    const topic = await trx('user_topic')
       .insert(fields)
       .returning('*')
       .then(results => results[0]); // return only first result
@@ -50,8 +50,8 @@ export const dbCreateUserTopic = ({ ...fields }) =>
   });
 
 
-//  Delete a user-topic
+//  Delete a user_topic
 export const dbDelUserTopic = id =>
-  knex('user-topic')
+  knex('user_topic')
     .where({ id })
     .del();
