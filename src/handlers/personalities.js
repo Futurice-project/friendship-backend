@@ -7,6 +7,7 @@ import {
   dbDelPersonality,
   dbCreatePersonality,
   dbGetUserPersonalities,
+  dbUpdateUserPersonality,
   dbCreateUserPersonality,
 } from '../models/personalities';
 
@@ -56,6 +57,33 @@ export const createPersonality = (request, reply) =>
 
 export const getUserPersonalities = (request, reply) =>
   dbGetUserPersonalities(request.params.userId).then(reply);
+
+export const updateUserPersonality = async (request, reply) => {
+  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
+    return reply(
+      Boom.unauthorized(
+        'Cannot update other users!',
+      ),
+    );
+  }
+
+  const fields = {
+    level: request.payload.level,
+  };
+
+  return dbUpdateUserPersonality(
+    request.payload.userId,
+    request.payload.personalityId,
+    fields)
+    .then(reply)
+    .catch((err) => {
+      if (err.constraint) {
+        reply(Boom.conflict('Constraint Error: ', err));
+      } else {
+        reply(Boom.badImplementation(err));
+      }
+    });
+};
 
 export const createUserPersonality = (request, reply) => {
   if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {

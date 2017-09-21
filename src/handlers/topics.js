@@ -48,7 +48,7 @@ export const updateTopic = async (request, reply) => {
  * @param request.payload.topicId The topicId that has to be added to a certain user
  * @param reply
  */
-export const addTopicToUser = (request, reply) => {
+export const createUserTopic = (request, reply) => {
   if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
     return reply(
       Boom.unauthorized(

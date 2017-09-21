@@ -1,14 +1,14 @@
 import { merge } from 'lodash';
 import Joi from 'joi';
 
-import { getAuthWithScope, doAuth } from '../utils/auth';
+import { getAuthWithScope } from '../utils/auth';
 import {
   getTopics,
   getTopic,
   addTopic,
   delTopic,
   updateTopic,
-  addTopicToUser,
+  createUserTopic,
   delUserTopic,
 } from '../handlers/topics';
 
@@ -84,7 +84,7 @@ const topics = [
     method: 'POST',
     path: '/user-topic',
     config: merge({}, validateUserTopicFields, getAuthWithScope('user')),
-    handler: addTopicToUser,
+    handler: createUserTopic,
   },
   //  Delete a topic that is connected to a user
   // @todo check if the OWNER is deleting this,

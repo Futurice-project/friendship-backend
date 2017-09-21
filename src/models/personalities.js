@@ -35,6 +35,12 @@ export const dbGetUserPersonalities = userId =>
     .select(userPersonalityFields)
     .where({ userId });
 
+export const dbUpdateUserPersonality = (userId, personalityId, fields) =>
+  knex('user_personality')
+    .update({ ...fields })
+    .where({ userId, personalityId })
+    .returning('*');
+
 export const dbCreateUserPersonality = ({ ...fields }) =>
   knex.transaction(trx =>
     knex('user_personality')

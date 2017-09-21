@@ -5,6 +5,7 @@ import {
   updatePersonality,
   createPersonality,
   getUserPersonalities,
+  updateUserPersonality,
   createUserPersonality,
 } from '../handlers/personalities';
 import { getAuthWithScope } from '../utils/auth';
@@ -57,6 +58,13 @@ const personalities = [
     path: '/user_personality/{userId}',
     config: getAuthWithScope('user'),
     handler: getUserPersonalities,
+  },
+
+  {
+    method: 'PATCH',
+    path: '/user_personality',
+    config: getAuthWithScope('user'),
+    handler: updateUserPersonality,
   },
 
   // Create new user_personality
