@@ -4,6 +4,7 @@ import { resizeImage } from '../utils/image';
 import { createToken, hashPassword } from '../utils/auth';
 import {
   dbGetUsers,
+  dbGetUsersBatch,
   dbGetUser,
   dbDelUser,
   dbUpdateUser,
@@ -14,6 +15,10 @@ import {
 } from '../models/users';
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
+
+export const getUsersBatch = (request, reply) =>
+  dbGetUsersBatch(request.params.pageNumber).then(reply);
+
 export const getUser = (request, reply) =>
   dbGetUser(request.params.userId).then(reply);
 
@@ -107,4 +112,3 @@ export const verifyUser = (request, reply) => {
       reply(Boom.conflict('This verification link is expired'));
     });
 };
-

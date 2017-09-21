@@ -4,8 +4,15 @@ import { sendVerificationEmail } from '../utils/email';
 const crypto = require('crypto');
 
 const userListFields = ['id', 'email', 'username', 'description', 'emoji', 'compatibility'];
+const pageLimit = 10;
 
 export const dbGetUsers = () => knex('users').select(userListFields);
+
+export const dbGetUsersBatch = pageNumber =>
+  knex('users')
+    .select(userListFields)
+    .limit(pageLimit)
+    .offset(pageNumber * pageLimit);
 
 export const dbGetEmailVerification = hash =>
   knex('email_verification')
