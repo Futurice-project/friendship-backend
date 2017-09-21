@@ -1,3 +1,6 @@
+import { merge } from 'lodash';
+import Joi from 'joi';
+
 import {
   getPersonalities,
   getPersonality,
@@ -9,6 +12,48 @@ import {
   createUserPersonality,
 } from '../handlers/personalities';
 import { getAuthWithScope } from '../utils/auth';
+
+const validateUserId = {
+  validate: {
+    params: {
+      userId: Joi.number()
+        .integer()
+        .required(),
+    },
+  },
+};
+
+const validatePersonalityId = {
+  validate: {
+    params: {
+      personalityId: Joi.number()
+        .integer()
+        .required(),
+    },
+  },
+};
+
+const validatePersonalityFields = {
+  validate: {
+    payload: {
+      name: Joi.string().required(),
+    },
+  },
+};
+
+const validateUserPersonalityFields = {
+  validate: {
+    payload: {
+      userId: Joi.number().integer().required(),
+      personalityId: Joi.number().integer().required(),
+      level: Joi.number()
+        .integer()
+        .min(1)
+        .max(5)
+        .required(),
+    },
+  },
+};
 
 const personalities = [
   // get all personalities
@@ -23,7 +68,7 @@ const personalities = [
   {
     method: 'GET',
     path: '/personalities/{personalityId}',
-    config: getAuthWithScope('user'),
+    config: merge({}, validatePersonalityId, getAuthWithScope('user')),
     handler: getPersonality,
   },
 
@@ -31,7 +76,7 @@ const personalities = [
   {
     method: 'DELETE',
     path: '/personalities/{personalityId}',
-    config: getAuthWithScope('admin'),
+    config: merge({}, validatePersonalityId, getAuthWithScope('admin')),
     handler: delPersonality,
   },
 
@@ -39,7 +84,7 @@ const personalities = [
   {
     method: 'PATCH',
     path: '/personalities/{personalityId}',
-    config: getAuthWithScope('admin'),
+    config: merge({}, validatePersonalityId, validatePersonalityFields, getAuthWithScope('admin')),
     handler: updatePersonality,
   },
 
@@ -47,16 +92,16 @@ const personalities = [
   {
     method: 'POST',
     path: '/personalities',
-    config: getAuthWithScope('admin'),
+    config: merge({}, validatePersonalityFields, getAuthWithScope('admin')),
     handler: createPersonality,
   },
 
 
-  // get all user personalities
+  // Get all user personalities
   {
     method: 'GET',
     path: '/user_personality/{userId}',
-    config: getAuthWithScope('user'),
+    config: merge({}, validateUserId, getAuthWithScope('user')),
     handler: getUserPersonalities,
   },
 
@@ -67,16 +112,12 @@ const personalities = [
     handler: updateUserPersonality,
   },
 
-  // Create new user_personality
-  // Need to check if user is editing his/her own profile
-  // Checking userId to match with request.userId (done)
-  // Check if personalityId is correct (constraint check)
-  // Check if the field is already there (userId and personalityId) 
-  // now it can be inserted more than once
+  // create new record in user_personality table
+  // example payload: { userId: 1, personalityId: 4, level: 3 }
   {
     method: 'POST',
     path: '/user_personality',
-    config: getAuthWithScope('user'),
+    config: merge({}, validateUserPersonalityFields, getAuthWithScope('user')),
     handler: createUserPersonality,
   },
 ];
