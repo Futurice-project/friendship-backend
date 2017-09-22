@@ -8,6 +8,7 @@ import {
   getUser,
   updateUser,
   delUser,
+  banUser,
   authUser,
   registerUser,
   verifyUser,
@@ -34,6 +35,19 @@ const validateRegistrationFields = {
     },
   },
 };
+
+const validateBanFields = {
+  validate: {
+    payload: {
+      userId: Joi.number()
+        .integer()
+        .required(),
+      reason: Joi.string(),
+      expire: Joi.string(),
+    },
+  },
+};
+
 
 const validatePageNumber = {
   validate: {
@@ -93,6 +107,13 @@ const users = [
     path: '/users/{userId}',
     config: merge({}, validateUserId, getAuthWithScope('admin')),
     handler: delUser,
+  },
+
+  {
+    method: 'POST',
+    path: '/users/{userId}/ban',
+    config: merge({}, validateBanFields, getAuthWithScope('admin')),
+    handler: banUser,
   },
 
   // Authenticate as user
