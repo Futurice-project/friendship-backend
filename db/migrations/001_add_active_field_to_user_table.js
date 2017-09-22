@@ -3,8 +3,8 @@
  */
 exports.up = knex => (
   knex.schema
-    .table('users', function (table){
-          table.boolean('active').defaultTo(false)
+    .table('users', (table) => {
+      table.boolean('active').defaultTo(false);
     })
 );
 
