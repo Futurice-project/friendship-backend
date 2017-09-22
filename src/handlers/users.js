@@ -74,6 +74,14 @@ export const updateUser = async (request, reply) => {
 };
 
 export const banUser = (request, reply) => {
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+    return reply(Boom.unauthorized('You don\'t have the permissions to do this action'))
+  }
+
+  if (!request.payload.userId || !request.payload.reason || !request.payload.expire) {
+    return reply(Boom.err('Something went wrong'))
+  }
+
   const fields = {
     user_id: request.payload.userId,
     banned_by: request.pre.user.id,
@@ -82,7 +90,7 @@ export const banUser = (request, reply) => {
   };
 
   return dbFetchUserBan(request.params.userId).then(result => {
-    if(result.length) return reply(Boom.conflict('User is already banned'));
+    if (result.length) return reply(Boom.conflict('User is already banned'));
 
     return dbBanUser(request.params.userId, fields).then(reply);
   })
