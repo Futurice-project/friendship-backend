@@ -7,12 +7,15 @@ import {
   dbGetUsersBatch,
   dbGetUser,
   dbDelUser,
+  dbBanUser,
+  dbFetchUserBan,
   dbUpdateUser,
   dbCreateUser,
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
 } from '../models/users';
+import moment from 'moment';
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
 
@@ -68,6 +71,21 @@ export const updateUser = async (request, reply) => {
   }
 
   return dbUpdateUser(request.params.userId, fields).then(reply);
+};
+
+export const banUser = (request, reply) => {
+  const fields = {
+    user_id: request.payload.userId,
+    banned_by: request.pre.user.id,
+    reason: request.payload.reason,
+    expire: request.payload.expire ? moment(request.payload.expire, 'DD-MM-YYYY').utc().toISOString() : null,
+  };
+
+  return dbFetchUserBan(request.params.userId).then((result) => {
+    if (result.length) return reply(Boom.conflict('User is already banned'));
+
+    return dbBanUser(request.params.userId, fields).then(reply);
+  });
 };
 
 export const authUser = (request, reply) =>
