@@ -81,13 +81,12 @@ export const banUser = (request, reply) => {
     expire: request.payload.expire ? moment(request.payload.expire, 'DD-MM-YYYY').utc().toISOString() : null,
   };
 
-  return dbFetchUserBan(request.params.userId).then(result => {
-    if(result.length) return reply(Boom.conflict('User is already banned'));
+  return dbFetchUserBan(request.params.userId).then((result) => {
+    if (result.length) return reply(Boom.conflict('User is already banned'));
 
     return dbBanUser(request.params.userId, fields).then(reply);
-  })
-
-}
+  });
+};
 
 export const authUser = (request, reply) =>
   reply(
