@@ -8,8 +8,8 @@ exports.up = function(knex, Promise) {
      */
     .createTableIfNotExists('banned_users', (table) => {
       table.increments('id').primary();
-      table.integer('user_id').references('id').inTable('users');
-      table.integer('banned_by').references('id').inTable('users');
+      table.integer('user_id').references('id').inTable('users').onDelete('CASCADE');
+      table.integer('banned_by').references('id').inTable('users').onDelete('SET NULL');
       table.timestamp('expire').defaultTo(null);
       table.text('reason').notNullable();
     });
