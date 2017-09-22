@@ -36,6 +36,19 @@ const validateRegistrationFields = {
   },
 };
 
+const validateBanFields = {
+  validate: {
+    payload: {
+      userId: Joi.number()
+        .integer()
+        .required(),
+      reason: Joi.string(),
+      expire: Joi.string(),
+    },
+  },
+};
+
+
 const validatePageNumber = {
   validate: {
     params: {
@@ -99,7 +112,7 @@ const users = [
   {
     method: 'POST',
     path: '/users/{userId}/ban',
-    config: merge({}, validateUserId, getAuthWithScope('admin')),
+    config: merge({}, validateBanFields, getAuthWithScope('admin')),
     handler: banUser,
   },
 
