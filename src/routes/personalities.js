@@ -72,7 +72,7 @@ const personalities = [
     handler: getPersonality,
   },
 
-  // delete personality (not working at the moment)
+  // delete personality (not working at the moment due to FK constraint)
   {
     method: 'DELETE',
     path: '/personalities/{personalityId}',

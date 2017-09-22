@@ -28,7 +28,7 @@ export const delTopic = (request, reply) => {
 };
 
 export const updateTopic = async (request, reply) => {
-  if (request.pre.user.scopre !== 'admin') {
+  if (request.pre.user.scope !== 'admin') {
     return reply(
       Boom.unauthorized(
         'Unprivileged users cannot update personality',
@@ -79,5 +79,14 @@ export const getUserTopics = (request, reply) =>
 
 // Delete a topic that is connected to a user
 export const delUserTopic = (request, reply) => {
-  return dbDelUserTopic(request.params.topicId).then(reply);
+  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
+    return reply(
+      Boom.unauthorized(
+        'Cannot update other users!',
+      ),
+    );
+  }
+
+  return dbDelUserTopic(request.payload.userId, request.payload.topicId).then(reply);
 };
+

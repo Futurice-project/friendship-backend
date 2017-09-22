@@ -34,10 +34,13 @@ const validateTopicFields = {
 const validateUserTopicFields = {
   validate: {
     payload: {
+      userId: Joi.number()
+        .integer()
+        .required(),
       topicId: Joi.number()
         .integer()
         .required(),
-      love: Joi.boolean().required(),
+      love: Joi.boolean(),
     },
   },
 };
@@ -98,8 +101,8 @@ const topics = [
   // and not another user (somehow we can't to get details of authenticated user, ask rasmus
   {
     method: 'DELETE',
-    path: '/user_topic/{topicId}',
-    config: merge({}, validateTopicId, getAuthWithScope('user')),
+    path: '/user_topic',
+    config: merge({}, validateUserTopicFields, getAuthWithScope('user')),
     handler: delUserTopic,
   },
 

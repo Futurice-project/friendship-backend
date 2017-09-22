@@ -51,7 +51,7 @@ export const dbCreateUserTopic = ({ ...fields }) =>
 
 
 //  Delete a user_topic
-export const dbDelUserTopic = id =>
+export const dbDelUserTopic = (userId, topicId) =>
   knex('user_topic')
-    .where({ id })
+    .where({ userId, topicId })
     .del();
