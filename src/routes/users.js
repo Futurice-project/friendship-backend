@@ -8,6 +8,7 @@ import {
   getUser,
   updateUser,
   delUser,
+  banUser,
   authUser,
   registerUser,
   verifyUser,
@@ -93,6 +94,13 @@ const users = [
     path: '/users/{userId}',
     config: merge({}, validateUserId, getAuthWithScope('admin')),
     handler: delUser,
+  },
+
+  {
+    method: 'POST',
+    path: '/users/{userId}/ban',
+    config: merge({}, validateUserId, getAuthWithScope('admin')),
+    handler: banUser,
   },
 
   // Authenticate as user

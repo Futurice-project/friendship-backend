@@ -34,6 +34,23 @@ export const dbUpdateUser = (id, fields) =>
     .where({ id })
     .returning('*');
 
+export const dbFetchUserBan = (id) =>
+  knex('banned_users').where('user_id', '=', id);
+
+
+export const dbBanUser = (id, fields) => {
+  fields = {
+    ...fields,
+    user_id: id,
+  }
+
+  return knex('banned_users')
+      .returning('*')
+      .insert(fields);
+
+}
+
+
 export const dbDelUser = id =>
   knex('users')
     .where({ id })
