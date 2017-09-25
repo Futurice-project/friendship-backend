@@ -12,6 +12,7 @@ const userFields = {
   username: faker.internet.userName,
   emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
   compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
+  birthday: () => faker.date.past(Math.floor((Math.random() * 30) + 10)),
   scope: 'user',
 };
 
@@ -42,6 +43,6 @@ exports.seed = knex =>
     .then(() =>
       knex.batchInsert(
         'users',
-        simpleFixtures.generateFixtures(userFields, 10),
+        simpleFixtures.generateFixtures(userFields, 50),
       ),
     );

@@ -4,16 +4,24 @@ import { resizeImage } from '../utils/image';
 import { createToken, hashPassword } from '../utils/auth';
 import {
   dbGetUsers,
+  dbGetUsersBatch,
   dbGetUser,
   dbDelUser,
+  dbBanUser,
+  dbFetchUserBan,
   dbUpdateUser,
   dbCreateUser,
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
 } from '../models/users';
+import moment from 'moment';
 
 export const getUsers = (request, reply) => dbGetUsers().then(reply);
+
+export const getUsersBatch = (request, reply) =>
+  dbGetUsersBatch(request.params.pageNumber).then(reply);
+
 export const getUser = (request, reply) =>
   dbGetUser(request.params.userId).then(reply);
 
@@ -65,6 +73,29 @@ export const updateUser = async (request, reply) => {
   return dbUpdateUser(request.params.userId, fields).then(reply);
 };
 
+export const banUser = (request, reply) => {
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+    return reply(Boom.unauthorized('You don\'t have the permissions to do this action'))
+  }
+
+  if (!request.payload.userId || !request.payload.reason || !request.payload.expire) {
+    return reply(Boom.err('Something went wrong'))
+  }
+
+  const fields = {
+    user_id: request.payload.userId,
+    banned_by: request.pre.user.id,
+    reason: request.payload.reason,
+    expire: request.payload.expire ? moment(request.payload.expire, 'DD-MM-YYYY').utc().toISOString() : null,
+  };
+
+  return dbFetchUserBan(request.params.userId).then((result) => {
+    if (result.length) return reply(Boom.conflict('User is already banned'));
+
+    return dbBanUser(request.params.userId, fields).then(reply);
+  });
+};
+
 export const authUser = (request, reply) =>
   reply(
     createToken({
@@ -92,8 +123,8 @@ export const registerUser = (request, reply) =>
       }
     });
 
-//check if the hash value exists in the db
-//and verify the user that matches (active=true)
+// check if the hash value exists in the db
+// and verify the user that matches (active=true)
 export const verifyUser = (request, reply) => {
   dbGetEmailVerification(request.params.hash)
     .then((data) => {
@@ -107,4 +138,3 @@ export const verifyUser = (request, reply) => {
       reply(Boom.conflict('This verification link is expired'));
     });
 };
-

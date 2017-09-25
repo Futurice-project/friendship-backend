@@ -23,9 +23,7 @@ export const addTopic = (request, reply) =>
   }).then(reply);
 
   // delete this will affect FK in user_personality --> ask Futurice?
-export const delTopic = (request, reply) => {
-  return dbDelTopic(request.params.topicId).then(reply);
-};
+export const delTopic = (request, reply) => dbDelTopic(request.params.topicId).then(reply);
 
 export const updateTopic = async (request, reply) => {
   if (request.pre.user.scope !== 'admin') {

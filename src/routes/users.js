@@ -4,9 +4,11 @@ import Joi from 'joi';
 import { getAuthWithScope, doAuth } from '../utils/auth';
 import {
   getUsers,
+  getUsersBatch,
   getUser,
   updateUser,
   delUser,
+  banUser,
   authUser,
   registerUser,
   verifyUser,
@@ -34,6 +36,29 @@ const validateRegistrationFields = {
   },
 };
 
+const validateBanFields = {
+  validate: {
+    payload: {
+      userId: Joi.number()
+        .integer()
+        .required(),
+      reason: Joi.string(),
+      expire: Joi.string(),
+    },
+  },
+};
+
+
+const validatePageNumber = {
+  validate: {
+    params: {
+      pageNumber: Joi.number()
+        .integer()
+        .required(),
+    },
+  },
+};
+
 const users = [
   // Get a list of all users
   {
@@ -41,6 +66,15 @@ const users = [
     path: '/users',
     config: getAuthWithScope('user'),
     handler: getUsers,
+  },
+
+  // Get a list of users in batches. Used with infinite scroller
+  // Starts with page 0 lol
+  {
+    method: 'GET',
+    path: '/users/page/{pageNumber}',
+    config: merge({}, validatePageNumber, getAuthWithScope('user')),
+    handler: getUsersBatch,
   },
 
   // Get info about a specific user by username
@@ -73,6 +107,13 @@ const users = [
     path: '/users/{userId}',
     config: merge({}, validateUserId, getAuthWithScope('admin')),
     handler: delUser,
+  },
+
+  {
+    method: 'POST',
+    path: '/users/{userId}/ban',
+    config: merge({}, validateBanFields, getAuthWithScope('admin')),
+    handler: banUser,
   },
 
   // Authenticate as user

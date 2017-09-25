@@ -12,7 +12,7 @@ if (
   env.NODE_ENV &&
   (env.NODE_ENV !== 'development' && env.NODE_ENV !== 'test')
 ) {
-  requiredEnvironmentVariables.forEach(key => {
+  requiredEnvironmentVariables.forEach((key) => {
     if (!env[key]) {
       /* eslint-disable no-console */
       console.log(`Warning: Environment variable ${key} not set.`);
