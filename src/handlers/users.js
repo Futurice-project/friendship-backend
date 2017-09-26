@@ -53,14 +53,14 @@ export const updateUser = async (request, reply) => {
     );
   }
 
-  const fields = {
-    email: request.payload.email,
-    description: request.payload.description,
-    image: request.payload.image,
-  };
+  const fields = {};
+
+  for(let field in request.payload) {
+    fields[field] = request.payload[field];
+  }
 
   // Only admins are allowed to modify user scope
-  if (request.pre.user.scope === 'admin') {
+  if (request.pre.user.scope === 'admin' && request.payload.scope) {
     fields.scope = request.payload.scope;
   }
 
@@ -76,10 +76,6 @@ export const updateUser = async (request, reply) => {
 export const banUser = (request, reply) => {
   if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
     return reply(Boom.unauthorized('You don\'t have the permissions to do this action'))
-  }
-
-  if (!request.payload.userId || !request.payload.reason || !request.payload.expire) {
-    return reply(Boom.err('Something went wrong'))
   }
 
   const fields = {
