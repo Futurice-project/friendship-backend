@@ -3,6 +3,10 @@ import Routes from 'hapi-routes-relative';
 import Hoek from 'hoek';
 import { join } from 'path';
 
+import Lout from 'lout';
+import Inert from 'inert';
+import Vision from 'vision';
+
 import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
@@ -28,6 +32,15 @@ export default Glue.compose({
   ],
   registrations: [
     {
+      plugin: Vision,
+    },
+    {
+      plugin: Inert,
+    },
+    {
+      plugin: Lout,
+    },
+    {
       plugin: 'hapi-auth-jwt2',
     },
     {
@@ -40,7 +53,7 @@ export default Glue.compose({
       },
     },
   ],
-}).then(server => {
+}).then((server) => {
   server.auth.strategy('jwt', 'jwt', {
     key: config.auth.secret,
     validateFunc: validateJwt,
@@ -51,13 +64,13 @@ export default Glue.compose({
   // server.auth.default('jwt');
 
   // Register routes once auth strategy is set up
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     server.register(
       {
         register: Routes,
         options: { dir: join(__dirname, 'routes') },
       },
-      err => {
+      (err) => {
         Hoek.assert(!err, err);
         resolve(server);
       },
