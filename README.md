@@ -8,6 +8,7 @@
 - [Deployment](/docs/DEPLOYMENT.md)
 - [Architecture](/docs/ARCHITECTURE.md)
 - [TODO](/docs/TODO.md)
+- Live route documentation after running the project at /docs
 
 ## Tech stack
 

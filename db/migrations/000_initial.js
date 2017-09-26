@@ -10,6 +10,7 @@ exports.up = knex =>
       table.timestamp('createdAt').defaultTo(knex.fn.now());
       table.enum('scope', ['admin', 'user']).notNullable();
       table.text('email').notNullable().unique();
+      table.boolean('active').defaultTo(false);
       table.text('description');
       table.text('username');
       table.text('emoji'); // @TODO: This should be a binary image called 'mood', create a table 'emojis' for this later and make a reference

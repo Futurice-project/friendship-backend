@@ -3,6 +3,7 @@ const faker = require('faker/locale/en');
 
 const topicFields = {
   name: () => faker.company.catchPhraseNoun() + faker.random.number({ min: 1, max: 999 }),
+  category: () => faker.random.number({ min: 1, max: 5 }),
 };
 
 let userId = 1;

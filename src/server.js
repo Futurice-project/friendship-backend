@@ -3,6 +3,10 @@ import Routes from 'hapi-routes-relative';
 import Hoek from 'hoek';
 import { join } from 'path';
 
+import Lout from 'lout';
+import Inert from 'inert';
+import Vision from 'vision';
+
 import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
@@ -27,6 +31,15 @@ export default Glue.compose({
     },
   ],
   registrations: [
+    {
+      plugin: Vision,
+    },
+    {
+      plugin: Inert,
+    },
+    {
+      plugin: Lout,
+    },
     {
       plugin: 'hapi-auth-jwt2',
     },
