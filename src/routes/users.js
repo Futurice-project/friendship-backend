@@ -39,10 +39,7 @@ const validateRegistrationFields = {
 const validateBanFields = {
   validate: {
     payload: {
-      userId: Joi.number()
-        .integer()
-        .required(),
-      reason: Joi.string(),
+      reason: Joi.string().required(),
       expire: Joi.string(),
     },
   },
