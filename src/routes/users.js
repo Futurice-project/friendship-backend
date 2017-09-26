@@ -46,6 +46,23 @@ const validatePageNumber = {
   },
 };
 
+const validateUserDetails = {
+  validate: {
+    payload: {
+      scope: Joi.string(),
+      email: Joi.string().email(),
+      description: Joi.string(),
+      emoji: Joi.string(),
+      image: Joi.binary(),
+      compatibility: Joi.string(),
+      location: Joi.string(),
+      enubleMatching: Joi.boolean(),
+      birthday: Joi.date(),
+      active: Joi.boolean(),
+    }
+  }
+}
+
 const users = [
   // Get a list of all users
   {
@@ -84,7 +101,7 @@ const users = [
   {
     method: 'PATCH',
     path: '/users/{userId}',
-    config: merge({}, validateUserId, getAuthWithScope('user')),
+    config: merge({}, validateUserDetails, getAuthWithScope('user')),
     handler: updateUser,
   },
 
