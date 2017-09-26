@@ -9,6 +9,7 @@ exports.up = knex => (
       table.increments('id').primary();
       table
         .text('name').unique();
+      table.integer('category');
     })
 
     .createTableIfNotExists('user_topic', (table) => {
