@@ -43,6 +43,7 @@ prompt.get(schema, (err, result) => {
             .insert({
               email: result.email,
               scope: 'admin',
+              active: true,
             })
             .returning('*')
             .then(results => results[0]); // return only first result
