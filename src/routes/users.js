@@ -42,6 +42,11 @@ const validateBanFields = {
       reason: Joi.string().required(),
       expire: Joi.string(),
     },
+    params: {
+      userId: Joi.number()
+        .integer()
+        .required()
+    }
   },
 };
 
