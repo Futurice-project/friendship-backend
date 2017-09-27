@@ -29,5 +29,5 @@ exports.up = knex =>
 
 exports.down = knex =>
   knex.schema
-    .table.dropTableIfExists('topics')
-    .table.dropTableIfExists('user_topic');
+    .table.dropTableIfExists('personalities')
+    .table.dropTableIfExists('user_personality');
