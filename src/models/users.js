@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const userListFields = ['id', 'email', 'username', 'description', 'emoji', 'compatibility', 'active'];
 const pageLimit = 10;
 
-export const dbGetUsers = () => knex('users').select(userListFields);
+export const dbGetUsers = () => knex('users').select(userListFields).orderBy('id', 'asc');
 
 export const dbGetUsersBatch = pageNumber =>
   knex('users')
