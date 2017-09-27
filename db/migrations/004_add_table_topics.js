@@ -13,8 +13,8 @@ exports.up = knex => (
     })
 
     .createTableIfNotExists('user_topic', (table) => {
-      table.integer('userId').unsigned().references('id').inTable('users');
-      table.integer('topicId').unsigned().references('id').inTable('topics');
+      table.integer('userId').unsigned().references('id').inTable('users').onDelete('CASCADE');
+      table.integer('topicId').unsigned().references('id').inTable('topics').onDelete('CASCADE');
       table.boolean('love');
       table.primary(['userId', 'topicId']);
     })
