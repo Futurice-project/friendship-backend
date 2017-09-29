@@ -30,7 +30,7 @@ const config = {
   },
   db: {
     // Common config for all db environments
-    debug: true, // Toggle db debugging
+    debug: false, // Toggle db debugging
     client: 'pg',
     connection: env.DATABASE_URL || {
       host: '127.0.0.1',
