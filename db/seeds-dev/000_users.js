@@ -1,11 +1,13 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
+const moment = require('moment');
 
 const emojis = ['👀', '💋', '🐶', '🦋', '😹', '😘', '🤡', '😈', '🤠', '👻'];
 
 const compatibilities = ['54 %', '46 %', '23 %', '98 %', '98 %', '21 %', '76 %'];
 
 const userFields = {
+  createdAt: moment(),
   email: faker.internet.email,
   description: faker.lorem.sentences,
   active: true,
@@ -14,6 +16,7 @@ const userFields = {
   compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
   birthday: () => faker.date.past(Math.floor((Math.random() * 30) + 10)),
   scope: 'user',
+  status: 'Activated',
 };
 
 // 'foobar'

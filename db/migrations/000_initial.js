@@ -7,7 +7,7 @@ exports.up = knex =>
      */
     .createTableIfNotExists('users', (table) => {
       table.increments('id').primary();
-      table.timestamp('createdAt').defaultTo(knex.fn.now());
+      table.timestamp('createdAt').notNullable();
       table.enum('scope', ['admin', 'user']).notNullable();
       table.text('email').notNullable().unique();
       table.boolean('active').defaultTo(false);
@@ -20,6 +20,7 @@ exports.up = knex =>
       table.text('location');
       table.boolean('enableMatching');
       table.date('birthday');
+      table.text('status');
     })
     /**
      * Define a separate table for storing user secrets (such as password hashes).

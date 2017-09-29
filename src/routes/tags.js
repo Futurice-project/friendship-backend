@@ -9,6 +9,8 @@ import {
   delTag,
   updateTag,
   getUserTags,
+  getTagsUser,
+  countTagLikes,
   createUserTag,
   delUserTag,
 } from '../handlers/tags';
@@ -88,6 +90,19 @@ const tags = [
     config: getAuthWithScope('user'),
     handler: getUserTags,
   },
+  {
+    method: 'GET',
+    path: '/tags_user/likes/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: countTagLikes,
+  },
+  {
+    method: 'GET',
+    path: '/tags_user/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: getTagsUser,
+  },
+
   // Add new tag to a user
   // Love is a boolean. True = love, false = hate the tag.
   {
