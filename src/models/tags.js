@@ -1,6 +1,6 @@
 import knex from '../utils/db';
 
-const tagListFields = ['id', 'name'];
+const tagListFields = ['id', 'user_id', 'name', 'category', 'createdAt'];
 const userTagListFields = ['userId', 'tagId', 'love'];
 
 export const dbGetTags = () => knex('tags').select(tagListFields);
@@ -37,6 +37,18 @@ export const dbGetUserTags = userId =>
   knex('user_tag')
     .select(userTagListFields)
     .where({ userId });
+
+// Get all the users of a tag, used in admin to check how many loves/hates a tag has
+export const dbGetTagsUser = tagId =>
+  knex('user_tag')
+    .select(userTagListFields)
+    .where({tagId});
+
+export const dbGetCountLikes = tagId =>
+knex('user_tag')
+  .where({tagId})
+  .groupBy('love')
+  .countDistinct('userId');
 
 // Add a new tag that a user loves/hates
 export const dbCreateUserTag = ({ ...fields }) =>
