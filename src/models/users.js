@@ -3,7 +3,7 @@ import { sendVerificationEmail } from '../utils/email';
 
 const crypto = require('crypto');
 
-const userListFields = ['id', 'createdAt', 'email', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
+const userListFields = ['id',  'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
 const pageLimit = 10;
 
 export const dbGetUsers = () => knex('users').select(userListFields).orderBy('id', 'asc');
