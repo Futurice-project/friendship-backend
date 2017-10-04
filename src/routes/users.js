@@ -13,6 +13,7 @@ import {
   registerUser,
   verifyUser,
   getUserByUsername,
+  getUserWithContent,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -45,11 +46,10 @@ const validateBanFields = {
     params: {
       userId: Joi.number()
         .integer()
-        .required()
-    }
+        .required(),
+    },
   },
 };
-
 
 const validatePageNumber = {
   validate: {
@@ -74,9 +74,9 @@ const validateUserDetails = {
       enubleMatching: Joi.boolean(),
       birthday: Joi.date(),
       active: Joi.boolean(),
-    }
-  }
-}
+    },
+  },
+};
 
 const users = [
   // Get a list of all users
@@ -108,9 +108,18 @@ const users = [
   {
     method: 'GET',
     path: '/users/{userId}',
-    config: merge({}, validateUserId, getAuthWithScope('user')),
+    config: merge({}, validateUserId),
+    // config: merge({}, validateUserId, getAuthWithScope('user')),
     handler: getUser,
   },
+
+  // {
+  //   method: 'GET',
+  //   path: '/usersWithContent/{userId}',
+  //   config: merge({}, validateUserId),
+  //   // config: merge({}, validateUserId, getAuthWithScope('user')),
+  //   handler: getUserWithContent,
+  // },
 
   // Update user profile
   {

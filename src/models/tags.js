@@ -2,6 +2,7 @@ import knex from '../utils/db';
 
 const tagListFields = ['id', 'name'];
 const userTagListFields = ['userId', 'tagId', 'love'];
+const tagsForUser = ['id', 'name', 'category', 'love'];
 
 export const dbGetTags = () => knex('tags').select(tagListFields);
 
@@ -9,6 +10,12 @@ export const dbGetTag = id =>
   knex('tags')
     .first()
     .where({ id });
+
+export const dbGetTagsForUser = userId =>
+  knex('tags')
+    .select(tagsForUser)
+    .leftJoin('user_tag', 'user_tag.tagId', 'tags.id')
+    .where({ 'user_tag.userId': userId });
 
 export const dbCreateTag = ({ ...fields }) =>
   knex.transaction(async (trx) => {
@@ -31,7 +38,6 @@ export const dbUpdateTag = (id, fields) =>
     .where({ id })
     .returning('*');
 
-
 //  Get all tags that a user has chosen to be either loved or hated
 export const dbGetUserTags = userId =>
   knex('user_tag')
@@ -48,7 +54,6 @@ export const dbCreateUserTag = ({ ...fields }) =>
 
     return tag;
   });
-
 
 //  Delete a user_tag
 export const dbDelUserTag = (userId, tagId) =>
