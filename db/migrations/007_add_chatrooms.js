@@ -2,7 +2,8 @@ exports.up = knex => (
     knex.schema
       .createTableIfNotExists('chatrooms', (table) => {
         table.increments('id').primary();
-        table.text('description').notNullable();
+        table.integer('userCreatorId').references('id').inTable('users');
+        table.integer('userReceieverId').references('id').inTable('users');
       })
   );
 exports.down = knex => (
