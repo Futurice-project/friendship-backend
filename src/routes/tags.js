@@ -13,8 +13,7 @@ import {
   countTagLikes,
   createUserTag,
   delUserTag,
-  countTagLoves,
-  countTagHates
+  getTagList
 } from '../handlers/tags';
 
 const validateTagId = {
@@ -100,15 +99,9 @@ const tags = [
   },
   {
     method: 'GET',
-    path: '/tags_user/loves/{tagId}',
+    path: '/tags_user/taglist',
     config: getAuthWithScope('user'),
-    handler: countTagLoves,
-  },
-  {
-    method: 'GET',
-    path: '/tags_user/hates/{tagId}',
-    config: getAuthWithScope('user'),
-    handler: countTagHates,
+    handler: getTagList,
   },
   {
     method: 'GET',

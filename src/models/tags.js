@@ -61,19 +61,19 @@ export const dbCreateUserTag = ({ ...fields }) =>
     return tag;
   });
 
-  export const dbGetCountLoves = tagId =>
-    knex('user_tag').count('love')
-      .where({
-        tagId,
-        love: 'true'
-      });
+  export const dbGetTagList = () =>
+    knex.raw(`SELECT DISTINCT("tags"."id"), "tags"."name",
+(SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
+WHERE "user_tag"."love" = TRUE),
+(SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
+WHERE "user_tag"."love" = FALSE),
+"tags"."user_id" AS "Creator"
+FROM "tags"
+left join "user_tag"
+ON "tags"."id" = "user_tag"."userId"
+ORDER BY "tags"."id";`);
+//});
 
-  export const dbGetCountHates = tagId =>
-    knex('user_tag').count('love')
-      .where({
-        tagId,
-        love: 'false'
-      });
 
 
 

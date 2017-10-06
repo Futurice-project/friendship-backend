@@ -11,8 +11,7 @@ import {
   dbGetTagsUser,
   dbGetCountLikes,
   dbDelUserTag,
-  dbGetCountLoves,
-  dbGetCountHates
+  dbGetTagList
 } from '../models/tags';
 
 export const getTags = (request, reply) => dbGetTags().then(reply);
@@ -85,11 +84,9 @@ export const getTagsUser = (request, reply) =>
 export const countTagLikes = (request, reply) =>
   dbGetCountLikes(request.params.tagId).then(reply);
 
-  export const countTagLoves = (request, reply) =>
-    dbGetCountLoves(request.params.tagId).then(reply);
+  export const getTagList = (request, reply) =>
+      dbGetTagList().then(reply);
 
-  export const countTagHates = (request, reply) =>
-      dbGetCountHates(request.params.tagId).then(reply);
 // Delete a tag that is connected to a user
 export const delUserTag = (request, reply) => {
   if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
