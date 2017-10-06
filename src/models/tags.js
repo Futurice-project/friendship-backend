@@ -45,10 +45,10 @@ export const dbGetTagsUser = tagId =>
     .where({tagId});
 
 export const dbGetCountLikes = tagId =>
-knex('user_tag')
-  .where({tagId})
-  .groupBy('love')
-  .countDistinct('userId');
+  knex('user_tag')
+    .where({tagId})
+    .groupBy('love')
+    .countDistinct('userId');
 
 // Add a new tag that a user loves/hates
 export const dbCreateUserTag = ({ ...fields }) =>
@@ -60,6 +60,22 @@ export const dbCreateUserTag = ({ ...fields }) =>
 
     return tag;
   });
+
+  export const dbGetCountLoves = tagId =>
+    knex('user_tag').count('love')
+      .where({
+        tagId,
+        love: 'true'
+      });
+
+  export const dbGetCountHates = tagId =>
+    knex('user_tag').count('love')
+      .where({
+        tagId,
+        love: 'false'
+      });
+
+
 
 
 //  Delete a user_tag
