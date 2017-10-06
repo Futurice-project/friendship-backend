@@ -67,11 +67,11 @@ export const dbCreateUserTag = ({ ...fields }) =>
 WHERE "user_tag"."love" = TRUE),
 (SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
 WHERE "user_tag"."love" = FALSE),
-"tags"."user_id" AS "Creator"
+"tags"."user_id" AS "creator"
 FROM "tags"
 left join "user_tag"
 ON "tags"."id" = "user_tag"."userId"
-ORDER BY "tags"."id";`);
+ORDER BY "tags"."id";`).then(results => results.rows);
 //});
 
 
