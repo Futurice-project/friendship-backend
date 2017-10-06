@@ -6,7 +6,7 @@ exports.up = knex => (
       .createTableIfNotExists('messages', (table) => {
         table.increments('id').unique().primary();
         table.text('textMessage');
-        table.date('chatTime');
+        table.timestamp('chatTime');
         table.integer('userId').references('id').inTable('users').unique();
         table.integer('chatroomId').unsigned().references('id').inTable('chatrooms');
       })
