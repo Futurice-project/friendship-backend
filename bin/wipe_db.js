@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 
 import prompt from 'prompt';
-
+import optimist from 'optimist';
 import config from '../src/utils/config';
 import knex from '../src/utils/db';
+
+prompt.override = optimist.argv;
 
 const schema = {
   properties: {
