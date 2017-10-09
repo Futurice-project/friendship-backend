@@ -8,7 +8,7 @@ before_script:
 install:
   - npm install
 script:
-  - yarn db:wipe --confirmation y
+  - yarn babel-node bin/wipe_db.js --confirmation y
   - yarn db:migrate
   - yarn db:seed
   - yarn start
