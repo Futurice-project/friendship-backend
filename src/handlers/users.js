@@ -14,10 +14,18 @@ import {
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
+  dbGetFilteredUsers,
 } from '../models/users';
 import moment from 'moment';
 
-export const getUsers = (request, reply) => dbGetUsers().then(reply);
+export const getUsers = (request, reply) => {
+    if(request.query.filter) {
+        return dbGetFilteredUsers(request.query.filter).then(reply) 
+    }
+    return dbGetUsers().then(reply);
+}
+
+export const getFilteredUsers = (request, reply) => dbGetFilteredUsers(request.query.filter).then(reply);
 
 export const getUsersBatch = (request, reply) =>
   dbGetUsersBatch(request.params.pageNumber).then(reply);

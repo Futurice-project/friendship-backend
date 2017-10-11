@@ -8,6 +8,14 @@ const pageLimit = 10;
 
 export const dbGetUsers = () => knex('users').select(userListFields).orderBy('id', 'asc');
 
+export const dbGetFilteredUsers = (filter) => {
+  return knex('users')
+    .where('username', 'like', '%' + filter.username + '%')
+    .orWhere('email', 'like', '%' + filter.email + '%')
+    .select(userListFields)
+    .orderBy('id', 'asc');
+}
+
 export const dbGetUsersBatch = pageNumber =>
   knex('users')
     .select(userListFields)
