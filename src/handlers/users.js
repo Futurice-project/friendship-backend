@@ -22,40 +22,27 @@ export const getUsers = (request, reply) => dbGetUsers().then(reply);
 export const getUsersBatch = (request, reply) =>
   dbGetUsersBatch(request.params.pageNumber).then(reply);
 
-export const getUser = (request, reply) =>
-  dbGetUser(request.params.userId).then(reply);
+export const getUser = (request, reply) => dbGetUser(request.params.userId).then(reply);
 
 export const getUserByUsername = (request, reply) =>
   dbGetUserByUsername(request.params.username).then(reply);
 
 export const delUser = (request, reply) => {
-  if (
-    request.pre.user.scope !== 'admin' &&
-    request.pre.user.id !== request.params.userId
-  ) {
-    return reply(
-      Boom.unauthorized('Unprivileged users can only delete own userId!'),
-    );
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+    return reply(Boom.unauthorized('Unprivileged users can only delete own userId!'));
   }
 
   return dbDelUser(request.params.userId).then(reply);
 };
 
 export const updateUser = async (request, reply) => {
-  if (
-    request.pre.user.scope !== 'admin' &&
-    request.pre.user.id !== request.params.userId
-  ) {
-    return reply(
-      Boom.unauthorized(
-        'Unprivileged users can only perform updates on own userId!',
-      ),
-    );
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+    return reply(Boom.unauthorized('Unprivileged users can only perform updates on own userId!'));
   }
 
   const fields = {};
 
-  for(let field in request.payload) {
+  for (const field in request.payload) {
     fields[field] = request.payload[field];
   }
 
@@ -75,14 +62,20 @@ export const updateUser = async (request, reply) => {
 
 export const banUser = (request, reply) => {
   if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
-    return reply(Boom.unauthorized('You don\'t have the permissions to do this action'))
+    return reply(Boom.unauthorized("You don't have the permissions to do this action"));
   }
 
   const fields = {
     user_id: request.payload.userId,
     banned_by: request.pre.user.id,
     reason: request.payload.reason,
-    expire: !request.payload.expire || request.payload.expire === 'x' ? null : moment().add(request.payload.expire.split(':')[0], request.payload.expire.split(':')[1]).utc().toISOString(),
+    expire:
+      !request.payload.expire || request.payload.expire === 'x'
+        ? null
+        : moment()
+            .add(request.payload.expire.split(':')[0], request.payload.expire.split(':')[1])
+            .utc()
+            .toISOString(),
   };
 
   return dbFetchUserBan(request.params.userId).then((result) => {
@@ -127,10 +120,11 @@ export const verifyUser = (request, reply) => {
       const fields = {
         active: true,
       };
-      dbDelVerificationHash(data.ownerId).then(() =>
-        dbUpdateUser(data.ownerId, fields).then(reply),
-      ).catch(() => reply(Boom.conflict('This verification link is expired')));
-    }).catch(() => {
+      dbDelVerificationHash(data.ownerId)
+        .then(() => dbUpdateUser(data.ownerId, fields).then(reply))
+        .catch(() => reply(Boom.conflict('This verification link is expired')));
+    })
+    .catch(() => {
       reply(Boom.conflict('This verification link is expired'));
     });
 };

@@ -13,7 +13,9 @@ import {
   countTagLikes,
   createUserTag,
   delUserTag,
-  getTagList
+  getTagsForUser,
+  getTagList,
+  getUsersInTag,
 } from '../handlers/tags';
 
 const validateTagId = {
@@ -48,7 +50,6 @@ const validateUserTagFields = {
   },
 };
 
-
 const tags = [
   // Get a list of all tags
   {
@@ -60,8 +61,14 @@ const tags = [
   // Get info about a specific tag
   {
     method: 'GET',
+    path: '/tagsForUser/{userId}',
+    config: getAuthWithScope('user'),
+    handler: getTagsForUser,
+  },
+  {
+    method: 'GET',
     path: '/tags/{tagId}',
-    config: merge({}, validateTagId, getAuthWithScope('user')),
+    config: merge({}, validateTagId),
     handler: getTag,
   },
   // Register new tag
@@ -90,6 +97,13 @@ const tags = [
     path: '/user_tag/{userId}',
     config: getAuthWithScope('user'),
     handler: getUserTags,
+  },
+  // Get all usernames of a tag
+  {
+    method: 'GET',
+    path: '/tag_user/tag/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: getUsersInTag,
   },
   {
     method: 'GET',
@@ -127,7 +141,6 @@ const tags = [
     config: merge({}, validateUserTagFields, getAuthWithScope('user')),
     handler: delUserTag,
   },
-
 ];
 
 export default tags;
