@@ -13,7 +13,6 @@ import {
   registerUser,
   verifyUser,
   getUserByUsername,
-  getUserWithContent,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -92,7 +91,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/page/{pageNumber}',
-    config: merge({}, validatePageNumber, getAuthWithScope('user')),
+    config: merge({}, validatePageNumber),
     handler: getUsersBatch,
   },
 
@@ -108,18 +107,9 @@ const users = [
   {
     method: 'GET',
     path: '/users/{userId}',
-    config: merge({}, validateUserId),
-    // config: merge({}, validateUserId, getAuthWithScope('user')),
+    config: merge({}, validateUserId, getAuthWithScope('user')),
     handler: getUser,
   },
-
-  // {
-  //   method: 'GET',
-  //   path: '/usersWithContent/{userId}',
-  //   config: merge({}, validateUserId),
-  //   // config: merge({}, validateUserId, getAuthWithScope('user')),
-  //   handler: getUserWithContent,
-  // },
 
   // Update user profile
   {

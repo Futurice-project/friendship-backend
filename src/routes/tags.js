@@ -9,9 +9,13 @@ import {
   delTag,
   updateTag,
   getUserTags,
+  getTagsUser,
+  countTagLikes,
   createUserTag,
   delUserTag,
   getTagsForUser,
+  getTagList,
+  getUsersInTag,
 } from '../handlers/tags';
 
 const validateTagId = {
@@ -58,8 +62,7 @@ const tags = [
   {
     method: 'GET',
     path: '/tagsForUser/{userId}',
-    // config: merge({}, validateUserId),
-    // config: merge({}, validateUserId, getAuthWithScope('user')),
+    config: getAuthWithScope('user'),
     handler: getTagsForUser,
   },
   {
@@ -92,9 +95,35 @@ const tags = [
   {
     method: 'GET',
     path: '/user_tag/{userId}',
-    // config: getAuthWithScope('user'),
+    config: getAuthWithScope('user'),
     handler: getUserTags,
   },
+  // Get all usernames of a tag
+  {
+    method: 'GET',
+    path: '/tag_user/tag/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: getUsersInTag,
+  },
+  {
+    method: 'GET',
+    path: '/tags_user/likes/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: countTagLikes,
+  },
+  {
+    method: 'GET',
+    path: '/tags_user/taglist',
+    config: getAuthWithScope('user'),
+    handler: getTagList,
+  },
+  {
+    method: 'GET',
+    path: '/tags_user/{tagId}',
+    config: getAuthWithScope('user'),
+    handler: getTagsUser,
+  },
+
   // Add new tag to a user
   // Love is a boolean. True = love, false = hate the tag.
   {

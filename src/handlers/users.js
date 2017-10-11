@@ -14,7 +14,6 @@ import {
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
-  dbGetUserWithContent,
 } from '../models/users';
 import moment from 'moment';
 
@@ -24,9 +23,6 @@ export const getUsersBatch = (request, reply) =>
   dbGetUsersBatch(request.params.pageNumber).then(reply);
 
 export const getUser = (request, reply) => dbGetUser(request.params.userId).then(reply);
-
-// export const getUserWithContent = (request, reply) =>
-//   dbGetUserWithContent(request.params.userId).then(reply);
 
 export const getUserByUsername = (request, reply) =>
   dbGetUserByUsername(request.params.username).then(reply);

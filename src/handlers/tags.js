@@ -8,8 +8,12 @@ import {
   dbUpdateTag,
   dbCreateUserTag,
   dbGetUserTags,
+  dbGetTagsUser,
+  dbGetCountLikes,
   dbDelUserTag,
   dbGetTagsForUser,
+  dbGetTagList,
+  dbGetUsersInTag,
 } from '../models/tags';
 
 export const getTags = (request, reply) => dbGetTags().then(reply);
@@ -66,8 +70,15 @@ export const createUserTag = (request, reply) => {
       }
     });
 };
-
+export const getUsersInTag = (request, reply) => dbGetUsersInTag(request.params.tagId).then(reply);
+// Get all tags of a user
 export const getUserTags = (request, reply) => dbGetUserTags(request.params.userId).then(reply);
+// get all users of tags
+export const getTagsUser = (request, reply) => dbGetTagsUser(request.params.tagId).then(reply);
+
+export const countTagLikes = (request, reply) => dbGetCountLikes(request.params.tagId).then(reply);
+
+export const getTagList = (request, reply) => dbGetTagList().then(reply);
 
 // Delete a tag that is connected to a user
 export const delUserTag = (request, reply) => {

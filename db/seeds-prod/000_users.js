@@ -5,6 +5,7 @@ const userFields = {
   email: faker.internet.email,
   description: faker.lorem.sentences,
   scope: 'user',
+  status: 'notActive',
 };
 
 exports.seed = knex =>

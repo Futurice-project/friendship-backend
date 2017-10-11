@@ -1,9 +1,11 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
+const moment = require('moment');
 
 const tagFields = {
   name: () => faker.company.catchPhraseNoun() + faker.random.number({ min: 1, max: 999 }),
   category: () => faker.random.number({ min: 1, max: 5 }),
+  createdAt: moment(),
 };
 
 let userId = 1;
