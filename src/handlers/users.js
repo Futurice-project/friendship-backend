@@ -43,6 +43,7 @@ export const delUser = (request, reply) => {
 
 export const updateUser = async (request, reply) => {
   if (
+    // console.log(request);
     request.pre.user.scope !== 'admin' &&
     request.pre.user.id !== request.params.userId
   ) {

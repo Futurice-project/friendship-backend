@@ -1,6 +1,8 @@
+import { getAuthWithScope } from '../utils/auth';
 import {
     getChatrooms,
     getChatroom,
+    createChatroom,
 } from '../handlers/chatrooms';
 
 const chatrooms = [
@@ -15,6 +17,14 @@ const chatrooms = [
     method: 'GET',
     path: '/chatrooms/{chatroomId}',
     handler: getChatroom,
+  },
+
+  // Register new chatrooms
+  {
+    method: 'POST',
+    path: '/chatrooms',
+    config: getAuthWithScope('user'),
+    handler: createChatroom,
   },
 ];
 export default chatrooms;
