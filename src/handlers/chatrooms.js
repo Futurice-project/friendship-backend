@@ -10,13 +10,6 @@ export const getChatroom = (request, reply) =>
 dbGetChatroom(request.params.chatroomId).then(reply);
 
 export const createChatroom = (request, reply) => {
-  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
-    return reply(
-        Boom.unauthorized(
-          'Cannot update other users!',
-        ),
-      );
-  }
   return dbCreateChatroom({
     ...request.payload,
     userCreatorId: request.payload.userCreatorId,

@@ -8,7 +8,6 @@ export const dbGetChatroom = id =>
 knex('chatrooms')
   .first()
   .where({ id });
-
 export const dbCreateChatroom = ({ ...fields }) =>
 knex.transaction(async (trx) => {
   const chatroom = await trx('chatrooms')
