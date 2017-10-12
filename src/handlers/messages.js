@@ -7,7 +7,7 @@ import {
 
 export const getMessages = (request, reply) => dbGetMessages().then(reply);
 export const getMessage = (request, reply) =>
-dbGetMessage(request.params.MessageId).then(reply);
+dbGetMessage(request.params.messageId).then(reply);
 
 export const createMessage = (request, reply) => {
   return dbCreateMessage({

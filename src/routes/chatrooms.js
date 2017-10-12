@@ -18,8 +18,7 @@ const chatrooms = [
     path: '/chatrooms/{chatroomId}',
     handler: getChatroom,
   },
-
-  // Register new chatrooms
+ // Get info about a specific user
   {
     method: 'POST',
     path: '/chatrooms',
