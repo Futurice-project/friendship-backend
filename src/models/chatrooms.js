@@ -4,10 +4,10 @@ const chatroomFields = ['id', 'userCreatorId', 'userReceiverId'];
 
 export const dbGetChatrooms = () => knex('chatrooms').select(chatroomFields).orderBy('id', 'asc');
 
-export const dbGetChatroom = id =>
-knex('chatrooms')
-  .first()
-  .where({ id });
+export const dbGetChatroom = chatroomId =>
+knex('messages')
+  .select()
+  .where({ chatroomId });
 export const dbCreateChatroom = ({ ...fields }) =>
 knex.transaction(async (trx) => {
   const chatroom = await trx('chatrooms')
