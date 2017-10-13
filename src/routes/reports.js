@@ -22,8 +22,8 @@ const validateReportId = {
 
 const validateReportFields = {
   validate: {
-    params: {
-      user_id: Joi.number()
+    payload: {
+      userId: Joi.number()
         .integer()
         .required(),
       description: Joi.string(),

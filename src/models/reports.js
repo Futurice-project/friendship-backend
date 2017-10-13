@@ -1,6 +1,6 @@
 import knex from '../utils/db';
 
-const reportFields = ['id', 'user_id', 'createdAt', 'description', 'reported_by'];
+const reportFields = ['id', 'userId', 'createdAt', 'description', 'reported_by'];
 
 export const dbGetReports = () => knex('reports').select(reportFields);
 
