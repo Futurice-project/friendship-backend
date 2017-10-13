@@ -7,8 +7,8 @@ exports.up = knex => (
         table.increments('id').unique().primary();
         table.text('textMessage');
         table.timestamp('chatTime');
-        table.integer('userId').references('id').inTable('users').unique();
-        table.integer('chatroomId').unsigned().references('id').inTable('chatrooms');
+        table.integer('userId').references('id').inTable('users');
+        table.integer('chatroomId').references('id').inTable('chatrooms');
       })
   );
   /**

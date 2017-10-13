@@ -1,16 +1,25 @@
-const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
-const moment = require('moment');
 
-const messageFields = {
-  textMessage: faker.lorem.sentences,
-  chatTime: moment(),
-};
 exports.seed = knex =>
 knex('messages')
   .then(() =>
-    knex.batchInsert(
+    knex('chatrooms').select()
+  )
+  .then((chatrooms) => {
+    const messages = [];
+
+    chatrooms.forEach(chatroom =>
+      [...Array(faker.random.number(5))].forEach(() =>
+        messages.push({
+          textMessage: faker.lorem.sentences(),
+          chatroomId: chatroom.id,
+          userId: Math.random > 0.5 ? chatroom.userCreatorId : chatroom.userReceiverId,
+        }),
+      ),
+    );
+
+    return knex.batchInsert(
       'messages',
-      simpleFixtures.generateFixtures(messageFields, 50),
-    ),
-  );
+      messages,
+    );
+  });
