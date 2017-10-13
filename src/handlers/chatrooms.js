@@ -1,13 +1,13 @@
 import Boom from 'boom';
 import {
     dbGetChatrooms,
-    dbGetChatroom,
+    dbGetAllMsWithChatroomId,
     dbCreateChatroom,
   } from '../models/chatrooms';
 
 export const getChatrooms = (request, reply) => dbGetChatrooms().then(reply);
 export const getChatroom = (request, reply) =>
-dbGetChatroom(request.params.chatroomId).then(reply);
+dbGetAllMsWithChatroomId(request.params.chatroomId).then(reply);
 
 export const createChatroom = (request, reply) => {
   return dbCreateChatroom({

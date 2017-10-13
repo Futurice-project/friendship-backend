@@ -13,7 +13,7 @@ export const createMessage = (request, reply) => {
   return dbCreateMessage({
     ...request.payload,
     textMessage: request.payload.textMessage,
-   // userReceiverId: request.payload.userReceiverId,
+    chatroomId: request.payload.chatroomId,
   })
     .then(reply)
     .catch((err) => {

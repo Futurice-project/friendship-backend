@@ -4,6 +4,9 @@ import {
     getChatroom,
     createChatroom,
 } from '../handlers/chatrooms';
+import {
+  createMessage,
+} from '../handlers/messages';
 
 const chatrooms = [
     // Get a list of all users
@@ -12,7 +15,7 @@ const chatrooms = [
     path: '/chatrooms',
     handler: getChatrooms,
   },
-   // Get info about a specific user
+   // Get all ms with chatroom Id
   {
     method: 'GET',
     path: '/chatrooms/{chatroomId}',
@@ -24,6 +27,13 @@ const chatrooms = [
     path: '/chatrooms',
     config: getAuthWithScope('user'),
     handler: createChatroom,
+  },
+  // create post messages
+  {
+    method: 'POST',
+    path: '/chatrooms/{chatroomId}/messages',
+    config: getAuthWithScope('user'),
+    handler: createMessage,
   },
 ];
 export default chatrooms;

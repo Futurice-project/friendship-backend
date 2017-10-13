@@ -3,11 +3,11 @@ import knex from '../utils/db';
 const messageFields = ['id', 'textMessage', 'chatTime', 'userId', 'chatroomId'];
 
 export const dbGetMessages = () => knex('messages').select(messageFields).orderBy('id', 'asc');
-
-export const dbGetMessage = id =>
+// get all ms by a userId
+export const dbGetMessage = userId =>
 knex('messages')
-  .first()
-  .where({ id });
+  .select()
+  .where({ userId });
 export const dbCreateMessage = ({ ...fields }) =>
 knex.transaction(async (trx) => {
   const message = await trx('messages')
