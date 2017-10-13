@@ -14,9 +14,17 @@ import {
   dbGetTagsForUser,
   dbGetTagList,
   dbGetUsersInTag,
+  dbGetFilteredTags,
 } from '../models/tags';
 
-export const getTags = (request, reply) => dbGetTags().then(reply);
+export const getTagList = (request, reply) => {
+    if(request.query.filter) {
+        return dbGetFilteredTags(request.query.filter).then(reply)
+    }
+    return dbGetTagList().then(reply);
+}
+
+export const getTags = (request, reply) => {dbGetTags().then(reply);}
 
 export const getTag = (request, reply) => dbGetTag(request.params.tagId).then(reply);
 
@@ -77,8 +85,6 @@ export const getUserTags = (request, reply) => dbGetUserTags(request.params.user
 export const getTagsUser = (request, reply) => dbGetTagsUser(request.params.tagId).then(reply);
 
 export const countTagLikes = (request, reply) => dbGetCountLikes(request.params.tagId).then(reply);
-
-export const getTagList = (request, reply) => dbGetTagList().then(reply);
 
 // Delete a tag that is connected to a user
 export const delUserTag = (request, reply) => {

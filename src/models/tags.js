@@ -5,6 +5,32 @@ const userTagListFields = ['userId', 'tagId', 'love'];
 const tagsForUser = ['id', 'name', 'category', 'love'];
 const tagUserListFields = ['user_tag.userId', 'users.username', 'user_tag.tagId', 'love', 'emoji'];
 
+export const dbGetTagList = () =>
+  knex.raw( `SELECT DISTINCT("tags"."id"), "tags"."name",
+(SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
+WHERE "user_tag"."love" = TRUE),
+(SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
+WHERE "user_tag"."love" = FALSE),
+"tags"."user_id" AS "creator", "tags"."createdAt"
+FROM "tags"
+left join "user_tag"
+ON "tags"."id" = "user_tag"."userId"
+ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
+
+export const dbGetFilteredTags = (filter) => {
+  return knex.raw( `SELECT DISTINCT("tags"."id"), "tags"."name",
+  (SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
+  WHERE "user_tag"."love" = TRUE),
+  (SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
+  WHERE "user_tag"."love" = FALSE),
+  "tags"."user_id" AS "creator", "tags"."createdAt"
+  FROM "tags"
+  left join "user_tag"
+  ON "tags"."id" = "user_tag"."userId"
+  WHERE tags.name LIKE '%` + filter.name + `%'
+  ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
+}
+
 export const dbGetTags = () => knex('tags').select(tagListFields);
 
 export const dbGetTag = id =>
@@ -74,23 +100,6 @@ export const dbCreateUserTag = ({ ...fields }) =>
 
     return tag;
   });
-
-export const dbGetTagList = () =>
-  knex
-    .raw(
-      `SELECT DISTINCT("tags"."id"), "tags"."name",
-(SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
-WHERE "user_tag"."love" = TRUE),
-(SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
-WHERE "user_tag"."love" = FALSE),
-"tags"."user_id" AS "creator", "tags"."createdAt"
-FROM "tags"
-left join "user_tag"
-ON "tags"."id" = "user_tag"."userId"
-ORDER BY "tags"."createdAt" DESC;`,
-    )
-    .then(results => results.rows);
-// });
 
 //  Delete a user_tag
 export const dbDelUserTag = (userId, tagId) =>

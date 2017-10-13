@@ -16,6 +16,7 @@ import {
   getTagsForUser,
   getTagList,
   getUsersInTag,
+  dbGetFilteredTags,
 } from '../handlers/tags';
 
 const validateTagId = {
@@ -56,6 +57,12 @@ const tags = [
     method: 'GET',
     path: '/tags',
     config: getAuthWithScope('user'),
+    handler: getTagList,
+  },
+  {
+    method: 'GET',
+    path: '/tags/filter',
+    config: getAuthWithScope('admin'),
     handler: getTags,
   },
   // Get info about a specific tag
