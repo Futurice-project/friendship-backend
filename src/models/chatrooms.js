@@ -11,11 +11,10 @@ knex('messages')
 export const dbGetAllMsFromChatrooms = () =>
 knex('chatrooms')
 .join('messages', 'chatrooms.id', 'messages.chatroomId')
-.join('users as u1', 'chatrooms.userCreatorId', 'u1.id')
-.join('users as u2', 'chatrooms.userReceiverId', 'u2.id')
-.select('messages.chatroomId', 'chatrooms.userCreatorId', 'u1.username as userCreatorName', 'u2.username as userReceiverName', 'chatrooms.userReceiverId', 'messages.textMessage', 'messages.chatTime')
-
-    .orderBy('chatrooms.id', 'asc');
+.join('users as u1', 'messages.userId', 'u1.id')
+//.join('users as u2', 'chatrooms.userReceiverId', 'u2.id')
+.select('messages.chatroomId', 'messages.userId as userCreatorId', 'u1.username as userCreatorName', 'messages.textMessage', 'messages.chatTime')
+.orderBy('chatrooms.id', 'asc');
 export const dbCreateChatroom = ({ ...fields }) =>
 knex('chatrooms')
     .insert(fields)
