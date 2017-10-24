@@ -4,10 +4,13 @@ const faker = require('faker/locale/en');
 const chatroomFields = {
   userCreatorId: () => faker.random.number({ min: 1, max: 51 }),
   userReceiverId: () => faker.random.number({ min: 1, max: 51 }),
+  messages: faker.lorem.sentences,
+  //userCreatorName: () =>
 };
 
 exports.seed = knex =>
 knex('chatrooms')
+// to get ms to post route
   .then(() =>
   knex('messages').select()
   )

@@ -9,10 +9,8 @@ knex('messages')
   .select()
   .where({ userId });
 export const dbCreateMessage = ({ ...fields }) =>
-knex.transaction(async (trx) => {
-  const message = await trx('messages')
+  knex('messages')
     .insert(fields)
     .returning('*')
     .then(results => results[0]); // return only first result
-  return message;
-});
+

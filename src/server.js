@@ -1,6 +1,7 @@
 import Glue from 'glue';
 import Routes from 'hapi-routes-relative';
 import Hoek from 'hoek';
+import Nes from 'nes';
 import { join } from 'path';
 
 import Lout from 'lout';
@@ -10,6 +11,7 @@ import Vision from 'vision';
 import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
+
 
 // Always use UTC timezone
 process.env.TZ = 'UTC';
@@ -76,4 +78,16 @@ export default Glue.compose({
       },
     );
   });
+})
+/*
+  //nes 
+  .then((server) => {
+    server.register(Nes, () => {
+      server.subscription('/chatrooms/{chatroomId}');
+      server.start(() => { 
+        server.publish('/chatrooms/5', { chatroomId: 5, textMessage: 'complete' });
+        server.publish('/chatrooms/6', { chatroomId: 5, textMessage: 'complete' });
+      });
+    });
 });
+*/

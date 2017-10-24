@@ -8,7 +8,7 @@ knex.schema
     table.increments('id').primary();
     table.text('name').notNullable().unique();
     table.timestamp('createdAt').notNullable();
-  })
+  });
 
 
 exports.down = knex =>

@@ -13,7 +13,7 @@ exports.up = knex =>
       table.boolean('active').defaultTo(false);
       table.integer('gender').references('id').inTable('genders');
       table.text('description');
-      table.text('username');
+      table.text('username').notNullable().unique();
       table.text('emoji'); // @TODO: This should be a binary image called 'mood', create a table 'emojis' for this later and make a reference
       table.binary('image');
       table.text('compatibility');

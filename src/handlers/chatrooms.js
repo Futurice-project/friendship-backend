@@ -3,6 +3,7 @@ import {
     dbGetChatrooms,
     dbGetAllMsWithChatroomId,
     dbCreateChatroom,
+    dbGetAllMsFromChatrooms,
   } from '../models/chatrooms';
 
 export const getChatrooms = (request, reply) => dbGetChatrooms().then(reply);
@@ -24,3 +25,6 @@ export const createChatroom = (request, reply) => {
       }
     });
 };
+export const getAllMsFromChatrooms = (request, reply) =>
+dbGetAllMsFromChatrooms().then(reply);
+
