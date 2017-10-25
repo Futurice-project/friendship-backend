@@ -4,14 +4,15 @@ import {
   dbGetTags,
   dbGetTag,
   dbCreateTag,
-  dbDelTag,
+  dbDelUserTag,
+  dbDelTagUser,
   dbUpdateTag,
   dbCreateUserTag,
   dbGetUserTags,
   dbGetTagsUser,
   dbGetCountLikes,
-  dbDelUserTag,
-  dbGetTagList
+  dbGetTagList,
+  dbDelTag
 } from '../models/tags';
 
 export const getTags = (request, reply) => dbGetTags().then(reply);
@@ -97,5 +98,18 @@ export const delUserTag = (request, reply) => {
     );
   }
 
-  return dbDelUserTag(request.payload.userId, request.payload.tagId).then(reply);
+  return dbDelUserTag(request.payload.userId).then(reply);
+};
+
+// Delete a tag that is connected to a user
+export const delTagUser = (request, reply) => {
+  if (request.pre.tags.id !== parseInt(request.payload.tagId, 10)) {
+    return reply(
+      Boom.unauthorized(
+        'Cannot update other users!',
+      ),
+    );
+  }
+
+  return dbDelTagUser(request.payload.tagId).then(reply);
 };

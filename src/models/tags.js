@@ -74,12 +74,14 @@ ON "tags"."id" = "user_tag"."userId"
 ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
 //});
 
-
-
-
-
-//  Delete a user_tag
-export const dbDelUserTag = (userId, tagId) =>
+//  Delete a tag cascading when a tag gets deleted
+export const dbDelTagUser = tagId =>
   knex('user_tag')
-    .where({ userId, tagId })
+    .where({ tagId })
     .del();
+
+//  Delete a tag cascading from the user side
+export const dbDelUserTag = userId =>
+  knex('user_tag')
+      .where({ userId })
+      .del();

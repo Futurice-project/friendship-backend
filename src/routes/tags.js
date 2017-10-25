@@ -7,6 +7,7 @@ import {
   getTag,
   addTag,
   delTag,
+  delTagUser,
   updateTag,
   getUserTags,
   getTagsUser,
@@ -15,6 +16,16 @@ import {
   delUserTag,
   getTagList
 } from '../handlers/tags';
+
+const validateUserId = {
+  validate: {
+    params: {
+      userId: Joi.number()
+        .integer()
+        .required(),
+    },
+  },
+};
 
 const validateTagId = {
   validate: {
@@ -123,9 +134,15 @@ const tags = [
   // and not another user (somehow we can't to get details of authenticated user, ask rasmus
   {
     method: 'DELETE',
-    path: '/user_tag',
-    config: merge({}, validateUserTagFields, getAuthWithScope('user')),
+    path: '/user_tag/{userId}',
+    config: merge({}, validateUserId, getAuthWithScope('user')),
     handler: delUserTag,
+  },
+  {
+    method: 'DELETE',
+    path: '/tag_user/{tagId}',
+    config: merge({}, validateTagId, getAuthWithScope('user')),
+    handler: delTagUser,
   },
 
 ];
