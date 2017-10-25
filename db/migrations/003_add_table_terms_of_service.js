@@ -7,6 +7,7 @@ exports.up = knex => (
       .createTableIfNotExists('terms_of_service', table => {
           table.increments('id').primary();
           table.text('tos_text').notNullable();
+          table.timestamp('createdAt').notNullable();
       })
   );
   

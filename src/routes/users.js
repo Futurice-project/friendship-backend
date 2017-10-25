@@ -46,11 +46,10 @@ const validateBanFields = {
     params: {
       userId: Joi.number()
         .integer()
-        .required()
-    }
+        .required(),
+    },
   },
 };
-
 
 const validatePageNumber = {
   validate: {
@@ -75,9 +74,9 @@ const validateUserDetails = {
       enubleMatching: Joi.boolean(),
       birthday: Joi.date(),
       active: Joi.boolean(),
-    }
-  }
-}
+    },
+  },
+};
 
 const users = [
   // Get a list of all users
@@ -99,7 +98,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/page/{pageNumber}',
-    config: merge({}, validatePageNumber, getAuthWithScope('user')),
+    config: merge({}, validatePageNumber),
     handler: getUsersBatch,
   },
 
