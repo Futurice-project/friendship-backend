@@ -2,8 +2,8 @@ const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 // yarn db:init yes
 const chatroomFields = {
-  userCreatorId: () => faker.random.number({ min: 1, max: 51 }),
-  userReceiverId: () => faker.random.number({ min: 1, max: 51 }),
+  user_creator_id: () => faker.random.number({ min: 1, max: 51 }),
+  user_receiver_id: () => faker.random.number({ min: 1, max: 51 }),
 
   //userCreatorName: () =>
 };

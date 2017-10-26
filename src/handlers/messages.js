@@ -11,9 +11,10 @@ dbGetMessage(request.params.messageId).then(reply);
 
 export const createMessage = (request, reply) => {
   return dbCreateMessage({
-    ...request.payload,
-    textMessage: request.payload.textMessage,
-    chatroomId: request.payload.chatroomId,
+    chat_time: new Date(),
+    user_id: request.payload.userId,
+    text_message: request.payload.textMessage,
+    chatroom_id: request.params.chatroomId,
   })
     .then(reply)
     .catch((err) => {

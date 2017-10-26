@@ -1,13 +1,33 @@
 import knex from '../utils/db';
 
-const chatroomFields = ['id', 'userCreatorId', 'userReceiverId'];
 
-export const dbGetChatrooms = () => knex('chatrooms').select(chatroomFields).orderBy('id', 'asc');
-
-export const dbGetAllMsWithChatroomId = chatroomId =>
+export const dbGetAllMsWithChatroomId = chatroom_id =>
 knex('messages')
-  .select()
-  .where({ chatroomId });
+  .where({ chatroom_id }).as('messages');
+
+export const dbGetChatrooms = () =>
+knex('chatrooms')
+.innerJoin('messages', 'chatrooms.id', 'messages.chatroom_id')
+.select([
+  'chatrooms.id as chatroomId',
+  'user_creator_id',
+  'user_receiver_id',
+  knex.raw('ARRAY_AGG(row_to_json(messages)) as messages')])
+.groupBy('chatrooms.id');
+
+
+export const dbGetChatroomsByUserId = userId =>
+knex('chatrooms')
+.innerJoin('messages', 'chatrooms.id', 'messages.chatroom_id')
+.select([
+  'chatrooms.id as chatroomId',
+  'user_creator_id',
+  'user_receiver_id',
+  knex.raw('ARRAY_AGG(row_to_json(messages)) as messages')])
+.where('user_creator_id', userId)
+.orWhere('user_receiver_id', userId)
+.groupBy('chatrooms.id');
+
 export const dbGetAllMsFromChatrooms = () =>
 knex('chatrooms')
 .join('messages', 'chatrooms.id', 'messages.chatroomId')
@@ -15,6 +35,7 @@ knex('chatrooms')
 //.join('users as u2', 'chatrooms.userReceiverId', 'u2.id')
 .select('messages.chatroomId', 'messages.userId as userCreatorId', 'u1.username as userCreatorName', 'messages.textMessage', 'messages.chatTime')
 .orderBy('chatrooms.id', 'asc');
+
 export const dbCreateChatroom = ({ ...fields }) =>
 knex('chatrooms')
     .insert(fields)

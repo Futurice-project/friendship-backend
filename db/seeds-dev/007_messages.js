@@ -11,9 +11,9 @@ knex('messages')
     chatrooms.forEach(chatroom =>
       [...Array(faker.random.number(5))].forEach(() =>
         messages.push({
-          textMessage: faker.lorem.sentences(),
-          chatroomId: chatroom.id,
-          userId: Math.random > 0.5 ? chatroom.userCreatorId : chatroom.userReceiverId,
+          text_message: faker.lorem.sentences(),
+          chatroom_id: chatroom.id,
+          user_id: Math.random > 0.5 ? chatroom.userCreatorId : chatroom.userReceiverId,
         }),
       ),
     );
