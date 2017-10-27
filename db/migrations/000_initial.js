@@ -13,7 +13,12 @@ exports.up = knex =>
         .text('email')
         .notNullable()
         .unique();
-      table.boolean('active').defaultTo(false);
+        /**
+         * 0 = deactivated
+         * 1 = activated
+         * 2 = banned
+         */
+      table.integer('active').defaultTo(0);
       table
         .integer('gender')
         .references('id')
@@ -26,7 +31,6 @@ exports.up = knex =>
       table.text('location');
       table.boolean('enableMatching');
       table.date('birthday');
-      table.text('status');
     })
     /**
      * Define a separate table for storing user secrets (such as password hashes).

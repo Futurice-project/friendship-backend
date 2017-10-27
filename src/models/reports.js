@@ -29,6 +29,3 @@ export const dbUpdateReport = (id, fields) =>
     .update({ ...fields })
     .where({ id })
     .returning('*');
-
-
-

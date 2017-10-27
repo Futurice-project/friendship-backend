@@ -10,13 +10,12 @@ const userFields = {
   createdAt: moment(),
   email: faker.internet.email,
   description: faker.lorem.sentences,
-  active: true,
+  active: 0,
   username: faker.internet.userName,
   emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
   compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
   birthday: () => faker.date.past(Math.floor((Math.random() * 30) + 10)),
   scope: 'user',
-  status: 'Activated',
 };
 
 // 'foobar'
@@ -28,7 +27,7 @@ exports.seed = knex =>
     // Generate one test admin user
     .insert({
       ...simpleFixtures.generateFixture(userFields),
-      active: true,
+      active: 0,
       email: 'foo@bar.com',
       scope: 'admin',
     },

@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import {
   dbGetReports,
-  dbGetReport, 
+  dbGetReport,
   dbCreateReport,
   dbUpdateReport,
   dbDelReport,
@@ -31,14 +31,14 @@ export const UpdateReport = async (request, reply) => {
         ),
       );
     }
-  
+
     const fields = {
         userId: request.payload.userId,
         createdAt: moment(),
         description: request.payload.description,
         reported_by: request.payload.reported_by,
     };
-  
+
     return dbUpdateReport(request.params.reportId, fields).then(reply);
   };
 
@@ -52,7 +52,6 @@ export const delReport = (request, reply) => {
         ),
       );
     }*/
-  
-    return dbDelReport(request.payload.reportId).then(reply);
-  };
 
+    return dbDelReport(request.params.reportId).then(reply);
+  };

@@ -72,7 +72,7 @@ const validateUserDetails = {
       location: Joi.string(),
       enubleMatching: Joi.boolean(),
       birthday: Joi.date(),
-      active: Joi.boolean(),
+      active: Joi.integer(),
     },
   },
 };
