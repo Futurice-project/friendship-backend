@@ -1,7 +1,6 @@
 import Glue from 'glue';
 import Routes from 'hapi-routes-relative';
 import Hoek from 'hoek';
-import Nes from 'nes';
 import { join } from 'path';
 
 import Lout from 'lout';
@@ -49,13 +48,21 @@ export default Glue.compose({
       plugin: 'hapi-qs',
     },
     {
+      plugin: 'nes',
+    },
+    {
+      plugin: {
+        register: './plugins/nes_plugin'
+      }
+    },
+    {
       plugin: {
         register: 'good',
         options: goodOptions,
       },
     },
   ],
-}).then((server) => {
+}, { relativeTo: __dirname }).then((server) => {
   server.auth.strategy('jwt', 'jwt', {
     key: config.auth.secret,
     validateFunc: validateJwt,
@@ -79,15 +86,3 @@ export default Glue.compose({
     );
   });
 })
-/*
-  //nes 
-  .then((server) => {
-    server.register(Nes, () => {
-      server.subscription('/chatrooms/{chatroomId}');
-      server.start(() => { 
-        server.publish('/chatrooms/5', { chatroomId: 5, textMessage: 'complete' });
-        server.publish('/chatrooms/6', { chatroomId: 5, textMessage: 'complete' });
-      });
-    });
-});
-*/

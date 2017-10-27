@@ -9,7 +9,7 @@ export const getMessages = (request, reply) => dbGetMessages().then(reply);
 export const getMessage = (request, reply) =>
 dbGetMessage(request.params.messageId).then(reply);
 
-export const createMessage = (request, reply) => {
+export const createMessage = function(request, reply) {
   return dbCreateMessage({
     chat_time: new Date(),
     user_id: request.payload.userId,
@@ -17,6 +17,7 @@ export const createMessage = (request, reply) => {
     chatroom_id: request.params.chatroomId,
   })
     .then(reply)
+    .then(() => this.server.publish(`/chatrooms/${request.params.chatroomId}`, request.payload.textMessage))
     .catch((err) => {
       if (err.constraint) {
         reply(Boom.conflict('Constraint Error: ', err));
