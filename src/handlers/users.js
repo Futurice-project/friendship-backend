@@ -102,7 +102,15 @@ export const registerUser = (request, reply) =>
         email: request.payload.email.toLowerCase().trim(),
         password: passwordHash,
         scope: 'user',
-      }).then(reply),
+      }).then((userData) => {
+        reply(
+          createToken({
+            id: userData.id,
+            email: userData.email,
+            scope: userData.scope,
+          }),
+        );
+      }),
     )
     .catch((err) => {
       if (err.constraint === 'users_email_unique') {
