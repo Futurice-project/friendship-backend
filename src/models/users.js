@@ -89,7 +89,8 @@ export const dbCreateUser = ({ password, ...fields }) =>
       .then();
 
     // console.log('Sending Hash Email now to', user.email);
-    sendVerificationEmail(hash, user.email);
+    // activate this here later
+    // sendVerificationEmail(hash, user.email);
 
     return user;
   });
