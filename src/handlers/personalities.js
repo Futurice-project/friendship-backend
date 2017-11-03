@@ -86,17 +86,9 @@ export const updateUserPersonality = async (request, reply) => {
 };
 
 export const createUserPersonality = (request, reply) => {
-  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
-    return reply(
-      Boom.unauthorized(
-        'Cannot update other users!',
-      ),
-    );
-  }
-
   return dbCreateUserPersonality({
     ...request.payload,
-    userId: request.payload.userId,
+    userId: request.pre.user.id,
     personalityId: request.payload.personalityId,
     level: request.payload.level,
   })
