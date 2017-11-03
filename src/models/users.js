@@ -35,8 +35,12 @@ export const dbGetEmailVerification = hash =>
 
 export const dbGetUser = id =>
   knex('users')
-    .first()
-    .where({ id });
+      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+      .select(userListFields)
+      .count('banned_users.id as isbanned')
+      .groupBy('users.id')
+      .first()
+    .where('users.id', '=', id);
 
 // export const dbGetUserWithContent = userId =>
 //   knex('tags')
