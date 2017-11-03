@@ -1,9 +1,16 @@
 import knex from '../utils/db';
 
 
-export const dbGetAllMsWithChatroomId = chatroom_id =>
-knex('messages')
-  .where({ chatroom_id }).as('messages');
+export const dbGetAllMsWithChatroomId = chatroomId =>
+knex('chatrooms')
+.innerJoin('messages', 'chatrooms.id', 'messages.chatroom_id')
+.select([
+  'chatrooms.id as chatroomId',
+  'user_creator_id',
+  'user_receiver_id',
+  knex.raw('ARRAY_AGG(row_to_json(messages)) as messages')])
+.groupBy('chatrooms.id')
+.where({ chatroom_id: chatroomId });
 
 export const dbGetChatrooms = () =>
 knex('chatrooms')
