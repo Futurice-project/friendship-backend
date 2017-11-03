@@ -63,6 +63,8 @@ const validatePageNumber = {
 const validateUserDetails = {
   validate: {
     payload: {
+      username: Joi.string(),
+      password: Joi.string(),
       scope: Joi.string(),
       email: Joi.string().email(),
       description: Joi.string(),
