@@ -3,13 +3,16 @@ import { sendVerificationEmail } from '../utils/email';
 
 const crypto = require('crypto');
 
-const userListFields = ['id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
+const userListFields = ['users.id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
 const pageLimit = 10;
 
 export const dbGetUsers = () =>
-  knex('users')
+    knex('users')
+      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
     .select(userListFields)
-    .orderBy('id', 'asc');
+    .count('banned_users.id as isbanned')
+      .groupBy('users.id')
+    .orderBy('users.id', 'asc');
 
 export const dbGetFilteredUsers = (filter) => {
   return knex('users')
