@@ -44,7 +44,6 @@ const validatePersonalityFields = {
 const validateUserPersonalityFields = {
   validate: {
     payload: {
-      userId: Joi.number().integer().required(),
       personalityId: Joi.number().integer().required(),
       level: Joi.number()
         .integer()
