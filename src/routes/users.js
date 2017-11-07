@@ -13,6 +13,7 @@ import {
   registerUser,
   verifyUser,
   getUserByUsername,
+  getFilteredUsers,
 } from '../handlers/users';
 
 const validateUserId = {
@@ -45,11 +46,10 @@ const validateBanFields = {
     params: {
       userId: Joi.number()
         .integer()
-        .required()
-    }
+        .required(),
+    },
   },
 };
-
 
 const validatePageNumber = {
   validate: {
@@ -74,9 +74,9 @@ const validateUserDetails = {
       enubleMatching: Joi.boolean(),
       birthday: Joi.date(),
       active: Joi.boolean(),
-    }
-  }
-}
+    },
+  },
+};
 
 const users = [
   // Get a list of all users
@@ -86,13 +86,19 @@ const users = [
     config: getAuthWithScope('user'),
     handler: getUsers,
   },
+  {
+    method: 'GET',
+    path: '/users/filter',
+    config: getAuthWithScope('admin'),
+    handler: getUsers,
+  },
 
   // Get a list of users in batches. Used with infinite scroller
   // Starts with page 0 lol
   {
     method: 'GET',
     path: '/users/page/{pageNumber}',
-    config: merge({}, validatePageNumber, getAuthWithScope('user')),
+    config: merge({}, validatePageNumber),
     handler: getUsersBatch,
   },
 
