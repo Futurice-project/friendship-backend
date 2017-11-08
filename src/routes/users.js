@@ -82,7 +82,7 @@ const users = [
   {
     method: 'GET',
     path: '/users',
-    config: getAuthWithScope('user'),
+    //  config: getAuthWithScope('user'),
     handler: getUsers,
   },
 
@@ -107,7 +107,8 @@ const users = [
   {
     method: 'GET',
     path: '/users/{userId}',
-    config: merge({}, validateUserId, getAuthWithScope('user')),
+  //  config: merge({}, validateUserId, getAuthWithScope('user')),
+    config: merge({}, validateUserId),
     handler: getUser,
   },
 

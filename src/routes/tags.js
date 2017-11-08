@@ -62,7 +62,7 @@ const tags = [
   {
     method: 'GET',
     path: '/tagsForUser/{userId}',
-    config: getAuthWithScope('user'),
+    //config: getAuthWithScope('user'),
     handler: getTagsForUser,
   },
   {
