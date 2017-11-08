@@ -49,3 +49,9 @@ export const dbCreateUserPersonality = ({ ...fields }) =>
       .returning('*')
       .then(results => results[0]),
   );
+
+export const dbCreateUserPersonalities = (personalityArray) =>
+    knex('user_personality')
+      .insert(personalityArray)
+      .returning('*')
+      .then(results => results[0])
