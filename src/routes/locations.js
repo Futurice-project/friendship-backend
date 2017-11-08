@@ -85,12 +85,21 @@ const locations = [
     method: 'DELETE',
     path: '/user_location',
     config: merge({}, validateLocationId, getAuthWithScope('user')),
-    handler: delLocation,
+    handler: delUserLocation,
   },
 
 
   // Add multiple locations to user
   // Always add all of the locations that the user chooses
+  // Sample payload:
+  // {
+  //   "locations": [
+  //     {"locationId" : 7 },
+  //     {"locationId" : 8 },
+  //     {"locationId" : 6 },
+  //     {"locationId" : 9 }
+  //   ]
+  // }
   {
     method: 'POST',
     path: '/user_locations',

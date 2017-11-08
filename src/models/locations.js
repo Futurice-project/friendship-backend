@@ -26,13 +26,18 @@ export const dbDelUserLocation = userId =>
     .where({ userId })
     .del();
 
-export const dbCreateUserLocations = (locationArray) => {
-  // knex.transaction(async (trx) => {
-  //   await trx('user_location')
-  //     .del(locationArray)
-  //     .then(results => results[0]);
-    return knex('user_location')
-    .insert(locationArray)
-    .returning('*')
-    .then(results => results);
-  }
+export const dbCreateUserLocations = (userId, locationArray) =>
+  knex.transaction(async (trx) => {
+    await trx('user_location')
+      .where({ userId })
+      .returning('*')
+      .del()
+      .then();
+
+    const userLocations = await trx('user_location')
+      .insert(locationArray)
+      .returning('*')
+      .then(results => results);
+
+    return userLocations;
+  });
