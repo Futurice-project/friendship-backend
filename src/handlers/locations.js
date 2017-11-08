@@ -51,9 +51,7 @@ export const createUserLocations = (request, reply) => {
       userId: request.pre.user.id,
     });
   });
-  
   return dbCreateUserLocations(locations)
-  .then(reply)
-  .catch(error => console.log(error));
+    .then(reply);
 };
 
