@@ -1,0 +1,2 @@
+import Boom from 'boom';
+
