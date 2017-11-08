@@ -101,10 +101,11 @@ export const dbCreateUser = ({ password, ...fields }) =>
         ownerId: user.id,
         hash,
       })
-      .then(() => console.log(hash));
+      .then();
 
     // console.log('Sending Hash Email now to', user.email);
-    sendVerificationEmail(hash, user.email);
+    // activate this here later
+    // sendVerificationEmail(hash, user.email);
 
     return user;
   });
