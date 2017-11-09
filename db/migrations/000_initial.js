@@ -23,7 +23,6 @@ exports.up = knex =>
       table.text('emoji'); // @TODO: This should be a binary image called 'mood', create a table 'emojis' for this later and make a reference
       table.binary('image');
       table.text('compatibility');
-      table.text('location');
       table.boolean('enableMatching');
       table.date('birthday');
       table.text('status');
