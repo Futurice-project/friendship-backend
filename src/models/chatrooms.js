@@ -5,15 +5,15 @@ const selectChatroomQuery =
       (SELECT json_build_object('id', id, 'username', username, 'emoji', emoji) 
               FROM users WHERE id = user_creator_id) as creator, 
       (SELECT json_build_object('id', id, 'username', username, 'emoji', emoji) 
-              FROM users WHERE id = user_receiver_id) as receiver,
-      ARRAY_AGG(row_to_json(messages)) as messages
+              FROM users WHERE id = user_receiver_id) as receiver,   
+      ARRAY_AGG(row_to_json(messages) ORDER BY messages.id) as messages
     FROM chatrooms JOIN messages ON chatrooms.id = messages.chatroom_id`;
 
 export const dbGetAllMsWithChatroomId = chatroomId =>
 knex.raw(`${selectChatroomQuery}
           WHERE chatroom_id = ${chatroomId}
           GROUP BY chatrooms.id;`)
-.then(results => results.rows);
+.then(results => results.rows[0]);
 
 export const dbGetChatrooms = () =>
 knex.raw(`${selectChatroomQuery}
