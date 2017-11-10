@@ -10,7 +10,7 @@ knex.schema
     table.text('description').notNullable().unique();
     table.timestamp('createdAt').notNullable();
     table.integer('reported_by').references('id').inTable('users').onDelete('SET NULL');
-  })
+  });
 
 
 exports.down = knex =>
