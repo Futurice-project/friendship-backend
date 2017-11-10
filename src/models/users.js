@@ -3,13 +3,24 @@ import { sendVerificationEmail } from '../utils/email';
 
 const crypto = require('crypto');
 
-const userListFields = ['id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
+const userListFields = ['users.id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
 const pageLimit = 10;
 
 export const dbGetUsers = () =>
-  knex('users')
+    knex('users')
+      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+    .select(userListFields)
+    .count('banned_users.id as isbanned')
+      .groupBy('users.id')
+    .orderBy('users.id', 'asc');
+
+export const dbGetFilteredUsers = (filter) => {
+  return knex('users')
+    .where('username', 'like', '%' + filter.username + '%')
+    .orWhere('email', 'like', '%' + filter.email + '%')
     .select(userListFields)
     .orderBy('id', 'asc');
+}
 
 export const dbGetUsersBatch = pageNumber =>
   knex('users')
@@ -24,8 +35,12 @@ export const dbGetEmailVerification = hash =>
 
 export const dbGetUser = id =>
   knex('users')
-    .first()
-    .where({ id });
+      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+      .select(userListFields)
+      .count('banned_users.id as isbanned')
+      .groupBy('users.id')
+      .first()
+    .where('users.id', '=', id);
 
 export const dbUpdatePassword =(id, hash) =>
    knex('secrets')
@@ -92,10 +107,11 @@ export const dbCreateUser = ({ password, ...fields }) =>
         ownerId: user.id,
         hash,
       })
-      .then(() => console.log(hash));
+      .then();
 
     // console.log('Sending Hash Email now to', user.email);
-    sendVerificationEmail(hash, user.email);
+    // activate this here later
+    // sendVerificationEmail(hash, user.email);
 
     return user;
   });

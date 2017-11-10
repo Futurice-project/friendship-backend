@@ -15,18 +15,32 @@ import {
   dbDelVerificationHash,
   dbGetUserByUsername,
   dbUpdatePassword,
+  dbGetFilteredUsers,
 } from '../models/users';
 import moment from 'moment';
 
-export const getUsers = (request, reply) => dbGetUsers().then(reply);
+export const getUsers = (request, reply) => {
+    if(request.query.filter) {
+        return dbGetFilteredUsers(request.query.filter).then(reply)
+    }
+    return dbGetUsers().then(reply);
+}
 
 export const getUsersBatch = (request, reply) =>
   dbGetUsersBatch(request.params.pageNumber).then(reply);
 
-export const getUser = (request, reply) => dbGetUser(request.params.userId).then(reply);
+export const getUser = (request, reply) => {
+    const user = dbGetUser(request.params.userId);
 
-export const getUserByUsername = (request, reply) =>
-  dbGetUserByUsername(request.params.username).then(reply);
+    if(user.isbanned === '1') {
+        user.isBanned = true;
+        user.ban = dbFetchUserBan(user.id);;
+    }
+
+    return reply(user);
+}
+
+export const getUserByUsername = (request, reply) => dbGetUserByUsername(request.params.username).then(reply);
 
 export const delUser = (request, reply) => {
   if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
@@ -113,7 +127,15 @@ export const registerUser = (request, reply) =>
         email: request.payload.email.toLowerCase().trim(),
         password: passwordHash,
         scope: 'user',
-      }).then(reply),
+      }).then((userData) => {
+        reply(
+          createToken({
+            id: userData.id,
+            email: userData.email,
+            scope: userData.scope,
+          }),
+        );
+      }),
     )
     .catch((err) => {
       if (err.constraint === 'users_email_unique') {

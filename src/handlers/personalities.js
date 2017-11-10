@@ -9,6 +9,7 @@ import {
   dbGetUserPersonalities,
   dbUpdateUserPersonality,
   dbCreateUserPersonality,
+  dbCreateUserPersonalities
 } from '../models/personalities';
 
 export const getPersonalities = (request, reply) => dbGetPersonalities().then(reply);
@@ -86,17 +87,9 @@ export const updateUserPersonality = async (request, reply) => {
 };
 
 export const createUserPersonality = (request, reply) => {
-  if (request.pre.user.id !== parseInt(request.payload.userId, 10)) {
-    return reply(
-      Boom.unauthorized(
-        'Cannot update other users!',
-      ),
-    );
-  }
-
   return dbCreateUserPersonality({
     ...request.payload,
-    userId: request.payload.userId,
+    userId: request.pre.user.id,
     personalityId: request.payload.personalityId,
     level: request.payload.level,
   })
@@ -108,4 +101,26 @@ export const createUserPersonality = (request, reply) => {
       reply(Boom.badImplementation(err));
     }
   });
+};
+
+// Batch add an array of personalities to a user
+// Format payload
+// personalities: [{"personalityId": 1, "level":5}, {"personalityId": 1, "level":5}]
+export const createUserPersonalities = (request, reply) => {
+  var personalities = [];
+  for(var i=0; i<request.payload.personalities.length; i++) {
+    personalities.push(
+      {
+        "personalityId": request.payload.personalities[i].personalityId,
+        "userId": request.pre.user.id,
+        "level": request.payload.personalities[i].level
+      }
+    )
+  }
+  return dbCreateUserPersonalities(personalities)
+    .then(reply)
+    .catch((err)=>{
+      console.log(err)
+      reply(Boom.conflict("One of the personalities is already added to this user and can't be added again"))
+    })
 };
