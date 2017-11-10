@@ -4,6 +4,7 @@ import { sendVerificationEmail } from '../utils/email';
 const crypto = require('crypto');
 
 const userListFields = ['users.id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
+
 const pageLimit = 10;
 
 export const dbGetUsers = () =>

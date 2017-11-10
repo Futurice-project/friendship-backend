@@ -11,6 +11,7 @@ import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
 
+
 // Always use UTC timezone
 process.env.TZ = 'UTC';
 
@@ -47,13 +48,21 @@ export default Glue.compose({
       plugin: 'hapi-qs',
     },
     {
+      plugin: 'nes',
+    },
+    {
+      plugin: {
+        register: './plugins/nes_plugin'
+      }
+    },
+    {
       plugin: {
         register: 'good',
         options: goodOptions,
       },
     },
   ],
-}).then((server) => {
+}, { relativeTo: __dirname }).then((server) => {
   server.auth.strategy('jwt', 'jwt', {
     key: config.auth.secret,
     validateFunc: validateJwt,
@@ -76,4 +85,4 @@ export default Glue.compose({
       },
     );
   });
-});
+})
