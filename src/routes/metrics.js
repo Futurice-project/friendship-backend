@@ -6,6 +6,7 @@ import {
   getNbMessagesByDayByConversation,
   getNbMessages,
   getNbActiveUsers,
+  getNbMessagesByConversation
 } from '../handlers/metrics'
 
 const metrics = [
