@@ -14,6 +14,7 @@ import {
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
+  dbUpdatePassword,
   dbGetFilteredUsers,
 } from '../models/users';
 import moment from 'moment';
@@ -70,7 +71,17 @@ export const updateUser = async (request, reply) => {
     const buf = Buffer.from(fields.image, 'base64');
     await resizeImage(buf).then(resized => (fields.image = resized));
   }
+  console.log(fields.password);
+  if (fields.password){
+    hashPassword(fields.password).then((hashedPassword) => {
+      console.log(hashedPassword);
+      dbUpdatePassword(request.pre.user.id, hashedPassword).catch(err => {
+        console.log(err)
+      })
+    })
 
+    delete fields.password;
+  }
   return dbUpdateUser(request.params.userId, fields).then(reply);
 };
 

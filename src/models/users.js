@@ -43,6 +43,12 @@ export const dbGetUser = id =>
       .first()
     .where('users.id', '=', id);
 
+export const dbUpdatePassword =(id, hash) =>
+   knex('secrets')
+    .update({password: hash})
+    .where({ ownerId: id })
+  
+
 // export const dbGetUserWithContent = userId =>
 //   knex('tags')
 //     .leftJoin('user_tag', 'user_tag.tagId', 'tags.id')
