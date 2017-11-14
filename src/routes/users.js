@@ -33,6 +33,7 @@ const validateRegistrationFields = {
         .email()
         .required(),
       password: Joi.string().required(),
+      username: Joi.string().required(),
     },
   },
 };

@@ -51,7 +51,10 @@ export const delUser = (request, reply) => {
 };
 
 export const updateUser = async (request, reply) => {
-  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+  // console.log('Pre', request.pre.user.id);
+  // console.log('params', request.params.userId);
+  // console.log(request.pre.user.id === parseInt(request.params.userId, 10));
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== parseInt(request.params.userId, 10)) {
     return reply(Boom.unauthorized('Unprivileged users can only perform updates on own userId!'));
   }
 
