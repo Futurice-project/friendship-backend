@@ -34,6 +34,8 @@ const validateRegistrationFields = {
         .required(),
       password: Joi.string().required(),
       username: Joi.string().required(),
+      image: Joi.binary(),
+      gender: Joi.array(),
     },
   },
 };
