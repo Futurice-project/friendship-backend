@@ -35,7 +35,8 @@ const validateRegistrationFields = {
       password: Joi.string().required(),
       username: Joi.string().required(),
       image: Joi.binary(),
-      gender: Joi.array(),
+      genders: Joi.array(),
+      birthyear: Joi.number(),
     },
   },
 };
@@ -77,7 +78,7 @@ const validateUserDetails = {
       compatibility: Joi.string(),
       location: Joi.string(),
       enubleMatching: Joi.boolean(),
-      birthday: Joi.date(),
+      birthyear: Joi.date(),
       active: Joi.boolean(),
     },
   },

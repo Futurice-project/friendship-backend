@@ -86,7 +86,7 @@ export const dbDelVerificationHash = ownerId =>
     .where({ ownerId })
     .del();
 
-export const dbCreateUser = ({ password, ...fields }) =>
+export const dbCreateUser = ({ password, genders, ...fields }) =>
   knex.transaction(async (trx) => {
     const user = await trx('users')
       .insert(fields)
@@ -98,6 +98,17 @@ export const dbCreateUser = ({ password, ...fields }) =>
         ownerId: user.id,
         password,
       })
+      .then();
+
+    const genderArray = [];
+    if (genders) {
+      genders.forEach((gender) => {
+        genderArray.push({ userId: user.id, genderId: gender });
+      });
+    }
+
+    await trx('user_gender')
+      .insert(genderArray)
       .then();
 
     // console.log('Creating Hash');

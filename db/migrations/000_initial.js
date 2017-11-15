@@ -20,7 +20,7 @@ exports.up = knex =>
       table.binary('image');
       table.text('compatibility');
       table.boolean('enableMatching');
-      table.date('birthday');
+      table.integer('birthyear').unsigned();
       table.text('status');
     })
     /**
