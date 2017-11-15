@@ -14,6 +14,7 @@ import {
   dbGetEmailVerification,
   dbDelVerificationHash,
   dbGetUserByUsername,
+  dbUpdatePassword,
   dbGetFilteredUsers,
 } from '../models/users';
 import moment from 'moment';
@@ -50,7 +51,10 @@ export const delUser = (request, reply) => {
 };
 
 export const updateUser = async (request, reply) => {
-  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
+  // console.log('Pre', request.pre.user.id);
+  // console.log('params', request.params.userId);
+  // console.log(request.pre.user.id === parseInt(request.params.userId, 10));
+  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== parseInt(request.params.userId, 10)) {
     return reply(Boom.unauthorized('Unprivileged users can only perform updates on own userId!'));
   }
 
@@ -70,7 +74,17 @@ export const updateUser = async (request, reply) => {
     const buf = Buffer.from(fields.image, 'base64');
     await resizeImage(buf).then(resized => (fields.image = resized));
   }
+  console.log(fields.password);
+  if (fields.password){
+    hashPassword(fields.password).then((hashedPassword) => {
+      console.log(hashedPassword);
+      dbUpdatePassword(request.pre.user.id, hashedPassword).catch(err => {
+        console.log(err)
+      })
+    })
 
+    delete fields.password;
+  }
   return dbUpdateUser(request.params.userId, fields).then(reply);
 };
 

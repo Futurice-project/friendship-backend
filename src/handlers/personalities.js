@@ -117,7 +117,7 @@ export const createUserPersonalities = (request, reply) => {
       }
     )
   }
-  return dbCreateUserPersonalities(personalities)
+  return dbCreateUserPersonalities(request.pre.user.id, personalities)
     .then(reply)
     .catch((err)=>{
       console.log(err)
