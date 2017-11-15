@@ -11,11 +11,6 @@ export const dbGetGender = id =>
     .first()
     .where({ id });
 
-// export const dbGetUserGenders = userId =>
-//   knex('user_gender')
-//     .select(userGenderFields)
-//     .where({ userId });
-
 export const dbGetUserGenders = userId =>
   knex('user_gender')
     .select(userGendersField)
