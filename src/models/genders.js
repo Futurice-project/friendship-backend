@@ -18,7 +18,7 @@ export const dbGetGender = id =>
 
 export const dbGetUserGenders = userId =>
   knex('user_gender')
-    .select('gender')
+    .select(userGendersField)
     .join('genders', 'user_gender.genderId', '=', 'genders.id')
     .where({ userId });
 
