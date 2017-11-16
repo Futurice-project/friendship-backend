@@ -4,6 +4,8 @@ import Joi from 'joi';
 import {
   getGenders,
   getGender,
+  createGender,
+  updateGender,
   getUserGenders,
   createUserGender,
   delUserGender,
@@ -59,6 +61,20 @@ const genders = [
     path: '/genders/{genderId}',
     config: merge({}, validateGenderId, getAuthWithScope('user')),
     handler: getGender,
+  },
+  // Create new gender
+  {
+    method: 'POST',
+    path: '/genders',
+    config: merge({}, validateGenderFields, getAuthWithScope('admin')),
+    handler: createGender,
+  },
+  // Update gender
+  {
+    method: 'PATCH',
+    path: '/genders/{genderId}',
+    config: merge({}, validateGenderId, validateGenderFields, getAuthWithScope('admin')),
+    handler: updateGender,
   },
   // Get all user genders
   {
