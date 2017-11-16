@@ -3,6 +3,8 @@ import Boom from 'boom';
 import {
   dbGetGenders,
   dbGetGender,
+  dbCreateGender,
+  dbUpdateGender,
   dbGetUserGenders,
   dbCreateUserGender,
   dbDelUserGender,
@@ -13,6 +15,31 @@ export const getGenders = (request, reply) =>
 
 export const getGender = (request, reply) =>
   dbGetGender(request.params.genderId).then(reply);
+
+export const createGender = (request, reply) =>
+  dbCreateGender({
+    ...request.payload,
+    gender: request.payload.gender,
+  })
+  .then(reply)
+  .catch(err => reply(Boom.badImplementation(err)),
+  );
+
+export const updateGender = async (request, reply) => {
+  if (request.pre.user.scope !== 'admin') {
+    return reply(
+      Boom.unauthorized(
+        'Unprivileged users cannnot update gender!',
+      ),
+    );
+  }
+
+  const fields = {
+    gender: request.payload.gender,
+  };
+
+  return dbUpdateGender(request.params.genderId, fields).then(reply);
+};
 
 export const getUserGenders = (request, reply) =>
   dbGetUserGenders(request.params.userId).then(reply);
