@@ -3,10 +3,9 @@ import Joi from 'joi';
 import { getAuthWithScope } from '../utils/auth';
 import {
   getNbMatchesMessaging,
-  getNbMessagesByDayByConversation,
+  getNbMessagesByConversation,
   getNbMessages,
   getNbActiveUsers,
-  getNbMessagesByConversation
 } from '../handlers/metrics'
 
 const metrics = [
