@@ -7,9 +7,10 @@ exports.up = knex => (
   knex.schema
     .createTableIfNotExists('tags', (table) => {
       table.increments('id').primary();
-      table.integer('user_id').references('id').inTable('users').onDelete('SET NULL');
+      table.integer('user_id').references('id').inTable('users').defaultTo(1).onDelete('SET NULL');
       table.text('name').unique();
       table.integer('category');
+      table.boolean('activated').notNull().defaultTo(false);
       table.timestamp('createdAt').notNullable();
     })
 

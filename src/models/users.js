@@ -43,6 +43,12 @@ export const dbGetUser = id =>
       .first()
     .where('users.id', '=', id);
 
+export const dbUpdatePassword =(id, hash) =>
+   knex('secrets')
+    .update({password: hash})
+    .where({ ownerId: id })
+  
+
 // export const dbGetUserWithContent = userId =>
 //   knex('tags')
 //     .leftJoin('user_tag', 'user_tag.tagId', 'tags.id')
@@ -102,10 +108,11 @@ export const dbCreateUser = ({ password, ...fields }) =>
         ownerId: user.id,
         hash,
       })
-      .then(() => console.log(hash));
+      .then();
 
     // console.log('Sending Hash Email now to', user.email);
-    sendVerificationEmail(hash, user.email);
+    // activate this here later
+    // sendVerificationEmail(hash, user.email);
 
     return user;
   });

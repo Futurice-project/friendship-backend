@@ -1,7 +1,7 @@
 import knex from '../utils/db';
 
 const selectChatroomQuery =
-    `SELECT chatrooms.id as chatroomId, 
+    `SELECT chatrooms.id, 
       (SELECT json_build_object('id', id, 'username', username, 'emoji', emoji) 
               FROM users WHERE id = user_creator_id) as creator, 
       (SELECT json_build_object('id', id, 'username', username, 'emoji', emoji) 

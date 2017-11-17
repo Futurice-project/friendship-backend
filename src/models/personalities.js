@@ -49,3 +49,19 @@ export const dbCreateUserPersonality = ({ ...fields }) =>
       .returning('*')
       .then(results => results[0]),
   );
+
+export const dbCreateUserPersonalities = (userId, personalityArray) =>
+  knex.transaction(async (trx) => {
+    await trx('user_personality')
+      .where({ userId })
+      .returning('*')
+      .del()
+      .then();
+
+    const userPersonalities = await trx('user_personality')
+      .insert(personalityArray)
+      .returning('*')
+      .then(results => results);
+
+    return userPersonalities;
+  });

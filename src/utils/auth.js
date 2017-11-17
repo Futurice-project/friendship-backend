@@ -45,11 +45,12 @@ export const comparePasswords = (passwordAttempt, user) =>
   new Promise((resolve, reject) =>
     bcrypt.compare(passwordAttempt, user.password, (err, isValid) => {
       if (!err && isValid) {
-        if (user.active) {
-          resolve(user);
-        } else {
-          reject(`The user with email '${user.email}' is not activated`);
-        }
+        resolve(user);
+        // if (user.active) {
+        //   resolve(user);
+        // } else {
+        //   reject(`The user with email '${user.email}' is not activated`);
+        // }
       } else {
         reject(`Incorrect password attempt by user with email '${user.email}'`);
       }
