@@ -77,7 +77,7 @@ const validateUserDetails = {
       image: Joi.binary(),
       compatibility: Joi.string(),
       location: Joi.string(),
-      enubleMatching: Joi.boolean(),
+      enableMatching: Joi.boolean(),
       birthyear: Joi.date(),
       active: Joi.boolean(),
     },
