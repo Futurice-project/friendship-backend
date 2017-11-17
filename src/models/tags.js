@@ -11,24 +11,28 @@ export const dbGetTagList = () =>
 WHERE "user_tag"."love" = TRUE),
 (SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
 WHERE "user_tag"."love" = FALSE),
-"tags"."user_id" AS "creator", "tags"."createdAt"
+"users"."username" AS "creator", "tags"."activated" AS "status", "tags"."createdAt"
 FROM "tags"
-left join "user_tag"
+LEFT JOIN "user_tag"
 ON "tags"."id" = "user_tag"."userId"
+LEFT JOIN "users"
+ON "tags"."user_id" = "users"."id"
 ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
 
 export const dbGetFilteredTags = (filter) => {
   return knex.raw( `SELECT DISTINCT("tags"."id"), "tags"."name",
-  (SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
-  WHERE "user_tag"."love" = TRUE),
-  (SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
-  WHERE "user_tag"."love" = FALSE),
-  "tags"."user_id" AS "creator", "tags"."createdAt"
-  FROM "tags"
-  left join "user_tag"
-  ON "tags"."id" = "user_tag"."userId"
-  WHERE tags.name LIKE '%` + filter.name + `%'
-  ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
+(SELECT COUNT("user_tag"."love") AS "nbLoves" FROM "user_tag"
+WHERE "user_tag"."love" = TRUE),
+(SELECT COUNT("user_tag"."love") AS "nbHates" FROM "user_tag"
+WHERE "user_tag"."love" = FALSE),
+"users"."username" AS "creator", "tags"."activated" AS "status", "tags"."createdAt"
+FROM "tags"
+LEFT JOIN "user_tag"
+ON "tags"."id" = "user_tag"."userId"
+LEFT JOIN "users"
+ON "tags"."user_id" = "users"."id"
+WHERE tags.name LIKE '%` + filter.name + `%'
+ORDER BY "tags"."createdAt" DESC;`).then(results => results.rows);
 }
 
 export const dbGetTags = () => knex('tags').select(tagListFields);
