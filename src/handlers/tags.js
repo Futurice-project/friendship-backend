@@ -14,17 +14,22 @@ import {
   dbGetTagsForUser,
   dbGetTagList,
   dbGetUsersInTag,
-  dbGetFilteredTags,
+  dbGetFilteredTags
 } from '../models/tags';
 
 export const getTagList = (request, reply) => {
-    if(request.query.filter) {
-        return dbGetFilteredTags(request.query.filter).then(reply)
-    }
-    return dbGetTagList().then(reply);
+  if (request.query.filter) {
+    return dbGetFilteredTags(request.query.filter).then(reply)
+  }
+  return dbGetTagList().then(reply);
 }
 
-export const getTags = (request, reply) => {dbGetTags().then(reply);}
+export const getTags = (request, reply) => {
+  if(request.query.filter) {
+    return dbGetFilteredTags(request.query.filter).then(reply)
+  }
+  return dbGetTags().then(reply);
+}
 
 export const getTag = (request, reply) => dbGetTag(request.params.tagId).then(reply);
 
@@ -34,20 +39,21 @@ export const getTagsForUser = (request, reply) =>
 export const addTag = (request, reply) =>
   dbCreateTag({
     ...request.payload,
-    name: request.payload.name,
+    name: request.payload.name
   }).then(reply);
 
 // delete this will affect FK in user_personality --> ask Futurice?
 export const delTag = (request, reply) => dbDelTag(request.params.tagId).then(reply);
 
-export const updateTag = async (request, reply) => {
+export const updateTag = async(request, reply) => {
   if (request.pre.user.scope !== 'admin') {
     return reply(Boom.unauthorized('Unprivileged users cannot update personality'));
   }
 
-  const fields = {
-    name: request.payload.name,
-  };
+  const fields = {};
+  for( const field in request.payload ) {
+    fields[field] = request.payload[field];
+  }
 
   return dbUpdateTag(request.params.tagId, fields).then(reply);
 };
@@ -67,7 +73,7 @@ export const createUserTag = (request, reply) => {
     ...request.payload,
     userId: request.payload.userId,
     tagId: request.payload.tagId,
-    love: request.payload.love,
+    love: request.payload.love
   })
     .then(reply)
     .catch((err) => {

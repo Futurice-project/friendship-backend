@@ -1,7 +1,8 @@
 {
     "env": {
         "jest": true,
-        "node": true,
+        "node": true
     },
     "extends": "airbnb",
+    "linebreak-style": ["error", "windows"]
 }

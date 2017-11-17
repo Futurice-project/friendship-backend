@@ -17,9 +17,12 @@ export const dbGetUsers = () =>
 
 export const dbGetFilteredUsers = (filter) => {
   return knex('users')
+    .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
     .where('username', 'like', '%' + filter.username + '%')
     .orWhere('email', 'like', '%' + filter.email + '%')
     .select(userListFields)
+    .count('banned_users.id as isbanned')
+    .groupBy('users.id')
     .orderBy('id', 'asc');
 }
 

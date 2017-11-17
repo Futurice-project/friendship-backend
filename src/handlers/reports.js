@@ -52,7 +52,7 @@ export const delReport = (request, reply) => {
         ),
       );
     }*/
-  
-    return dbDelReport(request.payload.reportId).then(reply);
+
+    return dbDelReport(request.params.reportId).then(reply);
   };
 

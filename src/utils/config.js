@@ -35,7 +35,7 @@ const config = {
     connection: env.DATABASE_URL || {
       host: '127.0.0.1',
       user: 'postgres',
-      password: '',
+      password: 'Galardo12321**',
       database: 'backendkit',
       ssl: false,
     },

@@ -5,9 +5,11 @@ export const dbGetNbMatchesMessaging = () => {
   return -1;
 }
 
-export const dbGetNbMessagesByConversation = () => {
-  return -1;
+export const dbGetAvgChatroomsPerUser = () => {
+  return knex.raw(`SELECT CAST((SELECT COUNT(users.id) FROM users) AS DECIMAL) / ( SELECT COUNT(chatrooms.id) AS DECIMAL) FROM chatrooms) ;`)
 }
+
+export const dbGetNbMessagesByConversation = () => knex.raw('SELECT CAST(COUNT(id) / COUNT(DISTINCT chatroom_id) AS DECIMAL) FROM messages; ');
 
 export const dbGetNbMessages = () => {
   return -1;

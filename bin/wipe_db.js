@@ -13,6 +13,12 @@ const schema = {
   },
 };
 
+var optimist = require('optimist');
+
+prompt.override = optimist.argv;
+
+console.log(optimist.argv);
+
 console.log('WARNING! This will wipe the database at:');
 console.log(config.db.development);
 console.log('Are you sure? (y/n)');
