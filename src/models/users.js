@@ -3,31 +3,42 @@ import { sendVerificationEmail } from '../utils/email';
 
 const crypto = require('crypto');
 
-const userListFields = ['users.id', 'createdAt', 'email', 'scope', 'username', 'description', 'emoji', 'compatibility', 'active', 'status'];
+const userListFields = [
+  'users.id',
+  'createdAt',
+  'email',
+  'scope',
+  'username',
+  'description',
+  'emoji',
+  'compatibility',
+  'active',
+  'status',
+];
 
 const pageLimit = 10;
 
 export const dbGetUsers = () =>
-    knex('users')
-      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+  knex('users')
+    .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
     .select(userListFields)
     .count('banned_users.id as isbanned')
-      .groupBy('users.id')
+    .groupBy('users.id')
     .orderBy('users.id', 'asc');
 
-export const dbGetFilteredUsers = (filter) => {
-  return knex('users')
-    .where('username', 'like', '%' + filter.username + '%')
-    .orWhere('email', 'like', '%' + filter.email + '%')
+export const dbGetFilteredUsers = filter =>
+  knex('users')
+    .where('username', 'like', `%${filter.username}%`)
+    .orWhere('email', 'like', `%${filter.email}%`)
     .select(userListFields)
     .orderBy('id', 'asc');
-}
 
-export const dbGetUsersBatch = pageNumber =>
+export const dbGetUsersBatch = (pageNumber, userId) =>
   knex('users')
     .select(userListFields)
     .limit(pageLimit)
-    .offset(pageNumber * pageLimit);
+    .offset(pageNumber * pageLimit)
+    .where('id', '!=', userId);
 
 export const dbGetEmailVerification = hash =>
   knex('email_verification')
@@ -36,26 +47,27 @@ export const dbGetEmailVerification = hash =>
 
 export const dbGetUser = id =>
   knex('users')
-      .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
-      .select(userListFields)
-      .count('banned_users.id as isbanned')
-      .groupBy('users.id')
-      .first()
+    .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+    .select(userListFields)
+    .count('banned_users.id as isbanned')
+    .groupBy('users.id')
+    .first()
     .where('users.id', '=', id);
 
-export const dbUpdatePassword =(id, hash) =>
-   knex('secrets')
-    .update({password: hash})
-    .where({ ownerId: id })
-  
+export const dbUpdatePassword = (id, hash) =>
+  knex('secrets')
+    .update({ password: hash })
+    .where({ ownerId: id });
 
 // export const dbGetUserWithContent = userId =>
 //   knex('tags')
 //     .leftJoin('user_tag', 'user_tag.tagId', 'tags.id')
 //     .where({ 'user_tag.userId': userId });
 
-export const dbGetUserByUsername = username =>
-  knex('users').where('username', 'like', `%${username}%`);
+export const dbGetUserByUsername = (username, userId) =>
+  knex('users')
+    .where('id', '!=', userId)
+    .andWhere('username', 'like', `%${username}%`);
 
 export const dbUpdateUser = (id, fields) =>
   knex('users')
