@@ -20,27 +20,28 @@ import {
 import moment from 'moment';
 
 export const getUsers = (request, reply) => {
-    if(request.query.filter) {
-        return dbGetFilteredUsers(request.query.filter).then(reply)
-    }
-    return dbGetUsers().then(reply);
-}
+  if (request.query.filter) {
+    return dbGetFilteredUsers(request.query.filter).then(reply);
+  }
+  return dbGetUsers().then(reply);
+};
 
 export const getUsersBatch = (request, reply) =>
-  dbGetUsersBatch(request.params.pageNumber).then(reply);
+  dbGetUsersBatch(request.params.pageNumber, request.pre.user.id).then(reply);
 
 export const getUser = (request, reply) => {
-    const user = dbGetUser(request.params.userId);
+  const user = dbGetUser(request.params.userId);
 
-    if(user.isbanned === '1') {
-        user.isBanned = true;
-        user.ban = dbFetchUserBan(user.id);;
-    }
+  if (user.isbanned === '1') {
+    user.isBanned = true;
+    user.ban = dbFetchUserBan(user.id);
+  }
 
-    return reply(user);
-}
+  return reply(user);
+};
 
-export const getUserByUsername = (request, reply) => dbGetUserByUsername(request.params.username).then(reply);
+export const getUserByUsername = (request, reply) =>
+  dbGetUserByUsername(request.params.username, request.pre.user.id).then(reply);
 
 export const delUser = (request, reply) => {
   if (request.pre.user.scope !== 'admin' && request.pre.user.id !== request.params.userId) {
@@ -54,7 +55,10 @@ export const updateUser = async (request, reply) => {
   // console.log('Pre', request.pre.user.id);
   // console.log('params', request.params.userId);
   // console.log(request.pre.user.id === parseInt(request.params.userId, 10));
-  if (request.pre.user.scope !== 'admin' && request.pre.user.id !== parseInt(request.params.userId, 10)) {
+  if (
+    request.pre.user.scope !== 'admin' &&
+    request.pre.user.id !== parseInt(request.params.userId, 10)
+  ) {
     return reply(Boom.unauthorized('Unprivileged users can only perform updates on own userId!'));
   }
 
@@ -75,13 +79,13 @@ export const updateUser = async (request, reply) => {
     await resizeImage(buf).then(resized => (fields.image = resized));
   }
   console.log(fields.password);
-  if (fields.password){
+  if (fields.password) {
     hashPassword(fields.password).then((hashedPassword) => {
       console.log(hashedPassword);
-      dbUpdatePassword(request.pre.user.id, hashedPassword).catch(err => {
-        console.log(err)
-      })
-    })
+      dbUpdatePassword(request.pre.user.id, hashedPassword).catch((err) => {
+        console.log(err);
+      });
+    });
 
     delete fields.password;
   }

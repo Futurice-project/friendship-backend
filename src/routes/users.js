@@ -104,7 +104,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/page/{pageNumber}',
-    config: merge({}, validatePageNumber),
+    config: merge({}, validatePageNumber, getAuthWithScope('user')),
     handler: getUsersBatch,
   },
 
@@ -112,7 +112,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/search/{username}',
-    config: getAuthWithScope('user'),
+    config: merge({}, getAuthWithScope('user')),
     handler: getUserByUsername,
   },
 
