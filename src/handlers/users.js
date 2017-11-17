@@ -122,31 +122,48 @@ export const authUser = (request, reply) =>
     }),
   );
 
-export const registerUser = (request, reply) =>
-  hashPassword(request.payload.password)
-    .then(passwordHash =>
-      dbCreateUser({
-        ...request.payload,
-        email: request.payload.email.toLowerCase().trim(),
-        password: passwordHash,
-        scope: 'user',
-      }).then((userData) => {
-        reply(
-          createToken({
-            id: userData.id,
-            email: userData.email,
-            scope: userData.scope,
-          }),
-        );
-      }),
-    )
-    .catch((err) => {
-      if (err.constraint === 'users_email_unique') {
-        reply(Boom.conflict('Account already exists'));
-      } else {
-        reply(Boom.badImplementation(err));
-      }
-    });
+export const registerUser = async (request, reply) => {
+  const fields = {};
+
+  // request.payload.forEach((field) => { fields[field] = request.payload[field]; });
+
+  for (const field in request.payload) {
+    fields[field] = request.payload[field];
+  }
+
+  // If request contains an image, resize it to max 512x512 pixels
+  if (fields.image) {
+    const buf = Buffer.from(fields.image, 'base64');
+    await resizeImage(buf).then(resized => (fields.image = resized));
+  }
+
+  console.log(fields);
+
+  return hashPassword(request.payload.password)
+  .then(passwordHash =>
+    dbCreateUser({
+      ...fields,
+      email: request.payload.email.toLowerCase().trim(),
+      password: passwordHash,
+      scope: 'user',
+    }).then((userData) => {
+      reply(
+        createToken({
+          id: userData.id,
+          email: userData.email,
+          scope: userData.scope,
+        }),
+      );
+    }),
+  )
+  .catch((err) => {
+    if (err.constraint === 'users_email_unique') {
+      reply(Boom.conflict('Account already exists'));
+    } else {
+      reply(Boom.badImplementation(err));
+    }
+  });
+};
 
 // check if the hash value exists in the db
 // and verify the user that matches (active=true)

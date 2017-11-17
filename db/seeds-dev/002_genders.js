@@ -1,7 +1,7 @@
 const simpleFixtures = require('simple-fixtures');
 const faker = require('faker/locale/en');
 
-const genders = ['male', 'female', 'human', 'other'];
+const genders = ['WOMAN', 'MAN', 'HUMAN', 'OTHER'];
 let count = -1;
 
 const genderFields = {
