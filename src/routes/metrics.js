@@ -3,12 +3,32 @@ import Joi from 'joi';
 import { getAuthWithScope } from '../utils/auth';
 import {
   getNbMatchesMessaging,
+  getAvgChatroomsPerUser,
   getNbMessagesByConversation,
   getNbMessages,
   getNbActiveUsers,
+  getUsersRegistered,
 } from '../handlers/metrics'
 
 const metrics = [
+  {
+    method: 'GET',
+    path: '/metrics/matchesmessaging',
+    config: getAuthWithScope('admin'),
+    handler: getNbMatchesMessaging,
+  },
+  {
+    method: 'GET',
+    path: '/metrics/avgchatroomsperuser',
+    config: getAuthWithScope('admin'),
+    handler: getAvgChatroomsPerUser,
+  },
+  {
+    method: 'GET',
+    path: '/metrics/messagesperconversation',
+    config: getAuthWithScope('admin'),
+    handler: getNbMessagesByConversation,
+  },
   {
     method: 'GET',
     path: '/metrics/messages',
@@ -23,15 +43,9 @@ const metrics = [
   },
   {
     method: 'GET',
-    path: '/metrics/messagesbyconversation',
+    path: '/metrics/usersregistered',
     config: getAuthWithScope('admin'),
-    handler: getNbMessagesByConversation,
-  },
-  {
-    method: 'GET',
-    path: '/metrics/messagesmessaging',
-    config: getAuthWithScope('admin'),
-    handler: getNbMatchesMessaging,
+    handler: getUsersRegistered,
   },
 ];
 
