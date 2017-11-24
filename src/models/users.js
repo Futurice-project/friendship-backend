@@ -13,6 +13,7 @@ const userListFields = [
   'emoji',
   'compatibility',
   'active',
+  'birthyear',
   'status',
 ];
 
