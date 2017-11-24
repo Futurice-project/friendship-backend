@@ -158,7 +158,9 @@ export const registerUser = async (request, reply) => {
   )
   .catch((err) => {
     if (err.constraint === 'users_email_unique') {
-      reply(Boom.conflict('Account already exists'));
+      reply(Boom.conflict('Email already exists'));
+    } else if (err.constraint === 'users_username_unique') {
+      reply(Boom.conflict('Username already exists'));
     } else {
       reply(Boom.badImplementation(err));
     }

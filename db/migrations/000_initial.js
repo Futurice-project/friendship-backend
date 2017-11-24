@@ -16,7 +16,7 @@ exports.up = knex =>
       table.boolean('active').defaultTo(false);
       table.text('description');
       table.text('username').notNullable().unique();
-      table.text('emoji'); // @TODO: This should be a binary image called 'mood', create a table 'emojis' for this later and make a reference
+      table.text('emoji');
       table.binary('image');
       table.text('compatibility');
       table.boolean('enableMatching');

@@ -37,6 +37,7 @@ const validateRegistrationFields = {
       image: Joi.binary(),
       genders: Joi.array(),
       birthyear: Joi.number(),
+      emoji: Joi.string(),
     },
   },
 };
