@@ -18,6 +18,7 @@
     "start": "npm run build && node dist/backend_kit.js",
     "build": "mkdir -p dist && babel src --out-dir dist --source-maps",
     "watch": "cross-env NODE_ENV=development nodemon --exec babel-node src/backend_kit.js",
+    "debug": "cross-env NODE_ENV=development nodemon --exec babel-node --inspect src/backend_kit.js",
     "register:admin": "babel-node bin/register_admin.js",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
