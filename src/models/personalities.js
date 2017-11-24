@@ -1,7 +1,7 @@
 import knex from '../utils/db';
 
 const personalityFields = ['id', 'name'];
-const userPersonalityFields = ['userId', 'personalityId', 'level'];
+const userPersonalityFields = ['userId', 'personalityId', 'level', 'name'];
 
 export const dbGetPersonalities = () => knex('personalities').select(personalityFields);
 
@@ -33,7 +33,9 @@ export const dbCreatePersonality = ({ ...fields }) =>
 export const dbGetUserPersonalities = userId =>
   knex('user_personality')
     .select(userPersonalityFields)
-    .where({ userId });
+    .join('personalities', 'user_personality.personalityId', '=', 'personalities.id')
+    .where({ userId })
+    .andWhere({ level: '5' });
 
 export const dbUpdateUserPersonality = (userId, personalityId, fields) =>
   knex('user_personality')
