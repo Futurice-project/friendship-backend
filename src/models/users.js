@@ -14,7 +14,9 @@ const userListFields = [
   'compatibility',
   'active',
   'status',
+  'image',
 ];
+//  .tostring('base64') db model
 
 const pageLimit = 10;
 
@@ -45,14 +47,20 @@ export const dbGetEmailVerification = hash =>
     .first()
     .where({ hash });
 
-export const dbGetUser = id =>
-  knex('users')
+export const dbGetUser = async (id) => {
+  const user = await knex('users')
     .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
     .select(userListFields)
     .count('banned_users.id as isbanned')
     .groupBy('users.id')
     .first()
     .where('users.id', '=', id);
+
+  // we convert the image in base 64 so we can display it in our app
+  user.image = user.image.toString('base64');
+
+  return user;
+};
 
 export const dbUpdatePassword = (id, hash) =>
   knex('secrets')
