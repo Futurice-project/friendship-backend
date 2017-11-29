@@ -16,8 +16,9 @@ export const createMessage = function(request, reply) {
     text_message: request.payload.textMessage,
     chatroom_id: request.params.chatroomId,
   })
-    .then(() => {
-      this.server.publish(`/chatrooms/${request.params.chatroomId}`, request.payload.textMessage)
+    .then((message) => {
+      this.publish(`/chatrooms/${request.params.chatroomId}`, request.payload.textMessage);
+      return message;
     })
     .then(reply)
     .catch((err) => {
