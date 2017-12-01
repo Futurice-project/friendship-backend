@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { getAuthWithScope } from '../utils/auth';
 import {
   getNbMatchesMessaging,
-  getNbMessagesByDayByConversation,
+  getNbMessagesByConversation,
   getNbMessages,
   getNbActiveUsers,
 } from '../handlers/metrics'

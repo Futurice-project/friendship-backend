@@ -15,3 +15,8 @@ export const dbGetNbMessages = () => {
 export const dbGetNbActiveUsers = () => {
   return -1;
 }
+
+export const dbUserLastActive = () => {
+  return knex('users')
+    .update({ lastActive: new Date()})
+}
