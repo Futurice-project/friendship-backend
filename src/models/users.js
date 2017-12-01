@@ -113,21 +113,80 @@ export const dbGetEmailVerification = hash =>
     .first()
     .where({ hash });
 
-export const dbGetUser = async (id) => {
-  const user = await knex('users')
-    .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
-    .select(userListFields)
-    .count('banned_users.id as isbanned')
-    .groupBy('users.id')
-    .first()
-    .where('users.id', '=', id);
+export const dbGetUser = async (userId, currentUserId) => {
+  // const user = await knex('users')
+  //   .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+  //   .select(userListFields)
+  //   .count('banned_users.id as isbanned')
+  //   .groupBy('users.id')
+  //   .first()
+  //   .where('users.id', '=', id);
+
+  const user = await knex.raw(`
+    WITH "UserLoveCommon"
+    AS (SELECT "users"."id","users"."createdAt","image","email","scope",
+    "username","description","emoji","active","birthyear","status",
+    count(DISTINCT "tags"."name") AS "loveCommon", array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ true + `
+    AND "users"."id" = ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + currentUserId + `
+                      AND "user_tag"."love" =`+ true +`)
+    GROUP BY "users"."id"),
+
+    "UserHateCommon"
+    AS (SELECT "users"."id" as "userHateId",
+    count(DISTINCT "tags"."name") AS "hateCommon"
+    FROM "users"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ false + `
+    AND "users"."id" = ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + currentUserId + `
+                      AND "user_tag"."love" =`+ false +`)
+    GROUP BY "users"."id"),
+
+    "UserLocation"
+    AS (SELECT "users"."id" as "userId",
+    array_agg(DISTINCT "locations"."name") AS "locations"
+    FROM "users"
+        left join "user_location"
+        ON "user_location"."userId" = "users"."id"
+        left join "locations"
+        ON "locations"."id" = "user_location"."locationId"
+    WHERE "users"."id" = ` + userId + `
+    GROUP BY "users"."id")
+
+    SELECT "id","createdAt","image","email","scope","username","description","emoji","active",
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations"
+    FROM "UserLoveCommon"
+    left join "UserHateCommon"
+    ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
+    left join "UserLocation"
+    ON "UserLoveCommon"."id" = "UserLocation"."userId"
+    LIMIT 1
+    `).then(results => results.rows);
 
   // we convert the image in base 64 so we can display it in our app
-  if (user.image) {
-    user.image = user.image.toString('base64');
+  if (user[0].image) {
+    user[0].image = user.image.toString('base64');
   }
 
-  return user;
+  return user[0];
 };
 
 export const dbUpdatePassword = (id, hash) =>
