@@ -57,7 +57,9 @@ export const dbGetUser = async (id) => {
     .where('users.id', '=', id);
 
   // we convert the image in base 64 so we can display it in our app
-  user.image = user.image.toString('base64');
+  if (user.image) {
+    user.image = user.image.toString('base64');
+  }
 
   return user;
 };
