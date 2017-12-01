@@ -178,7 +178,6 @@ export const dbGetUser = async (userId, currentUserId) => {
     ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
     left join "UserLocation"
     ON "UserLoveCommon"."id" = "UserLocation"."userId"
-    LIMIT 1
     `).then(results => results.rows);
 
   // we convert the image in base 64 so we can display it in our app
