@@ -81,13 +81,28 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
                       AND "user_tag"."love" =`+ false +`)
     GROUP BY "users"."id"
     LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserLocation"
+    AS (SELECT "users"."id" as "userId",
+    array_agg(DISTINCT "locations"."name") AS "locations"
+    FROM "users"
+        left join "user_location"
+        ON "user_location"."userId" = "users"."id"
+        left join "locations"
+        ON "locations"."id" = "user_location"."locationId"
+    WHERE "users"."id" != ` + userId + `
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
     OFFSET ` + (pageNumber * pageLimit) + `)
 
     SELECT "id","createdAt","email","scope","username","description","emoji","active",
-    "birthyear","status","genderlist","loveCommon","hateCommon"
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations"
     FROM "UserLoveCommon"
     left join "UserHateCommon"
     ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
+    left join "UserLocation"
+    ON "UserLoveCommon"."id" = "UserLocation"."userId"
     `).then(results => results.rows);
 
   return users;
