@@ -18,8 +18,6 @@ const userListFields = [
   'image',
 ];
 
-const pageLimit = 10;
-
 export const dbGetUsers = () =>
   knex('users')
     .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
@@ -35,12 +33,65 @@ export const dbGetFilteredUsers = filter =>
     .select(userListFields)
     .orderBy('id', 'asc');
 
-export const dbGetUsersBatch = (pageNumber, userId) =>
-  knex('users')
-    .select(userListFields)
-    .limit(pageLimit)
-    .offset(pageNumber * pageLimit)
-    .where('id', '!=', userId);
+export const dbGetUsersBatch = async (pageNumber, userId) => {
+  const pageLimit = 10;
+  // knex('users')
+  //   .select(userListFields)
+  //   .limit(pageLimit)
+  //   .offset(pageNumber * pageLimit)
+  //   .where('id', '!=', userId);
+
+  const users = await knex.raw(`
+    WITH "UserLoveCommon"
+    AS (SELECT "users"."id","users"."createdAt","email","scope",
+    "username","description","emoji","active","birthyear","status",
+    count(DISTINCT "tags"."name") AS "loveCommon", array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ true + `
+    AND "users"."id" != ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + userId + `
+                      AND "user_tag"."love" =`+ true +`)
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserHateCommon"
+    AS (SELECT "users"."id" as "userHateId",
+    count(DISTINCT "tags"."name") AS "hateCommon"
+    FROM "users"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ false + `
+    AND "users"."id" != ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + userId + `
+                      AND "user_tag"."love" =`+ false +`)
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `)
+
+    SELECT "id","createdAt","email","scope","username","description","emoji","active",
+    "birthyear","status","genderlist","loveCommon","hateCommon"
+    FROM "UserLoveCommon"
+    left join "UserHateCommon"
+    ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
+    `).then(results => results.rows);
+
+  return users;
+};
 
 export const dbGetEmailVerification = hash =>
   knex('email_verification')
