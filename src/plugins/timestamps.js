@@ -1,5 +1,5 @@
 'use strict';
-import {dbMetricsActiveUsers} from '../models/metrics';
+import {dbUserLastActive} from '../models/metrics';
 
 const metrics = {
      register: function (server, options, next) {
