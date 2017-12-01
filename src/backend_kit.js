@@ -16,3 +16,4 @@ compose
   .catch((err) => {
     console.error('Error while starting server:', err);
   });
+

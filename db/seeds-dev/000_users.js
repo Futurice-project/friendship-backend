@@ -14,7 +14,7 @@ const userFields = {
   username: faker.internet.userName,
   emoji: () => emojis[Math.floor(Math.random() * emojis.length)],
   compatibility: () => compatibilities[Math.floor(Math.random() * compatibilities.length)],
-  birthday: () => faker.date.past(Math.floor((Math.random() * 30) + 10)),
+  birthyear: () => faker.random.number({ min: 1950, max: 2000 }),
   scope: 'user',
   status: 'Activated',
 };

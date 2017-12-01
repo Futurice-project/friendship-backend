@@ -33,6 +33,11 @@ const validateRegistrationFields = {
         .email()
         .required(),
       password: Joi.string().required(),
+      username: Joi.string().required(),
+      image: Joi.binary(),
+      genders: Joi.array(),
+      birthyear: Joi.number(),
+      emoji: Joi.string(),
     },
   },
 };
@@ -64,6 +69,8 @@ const validatePageNumber = {
 const validateUserDetails = {
   validate: {
     payload: {
+      username: Joi.string(),
+      password: Joi.string(),
       scope: Joi.string(),
       email: Joi.string().email(),
       description: Joi.string(),
@@ -71,8 +78,8 @@ const validateUserDetails = {
       image: Joi.binary(),
       compatibility: Joi.string(),
       location: Joi.string(),
-      enubleMatching: Joi.boolean(),
-      birthday: Joi.date(),
+      enableMatching: Joi.boolean(),
+      birthyear: Joi.date(),
       active: Joi.boolean(),
     },
   },
@@ -98,7 +105,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/page/{pageNumber}',
-    config: merge({}, validatePageNumber),
+    config: merge({}, validatePageNumber, getAuthWithScope('user')),
     handler: getUsersBatch,
   },
 
@@ -106,7 +113,7 @@ const users = [
   {
     method: 'GET',
     path: '/users/search/{username}',
-    config: getAuthWithScope('user'),
+    config: merge({}, getAuthWithScope('user')),
     handler: getUserByUsername,
   },
 
