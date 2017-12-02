@@ -195,7 +195,7 @@ export const dbGetUser = async (userId, currentUserId) => {
     GROUP BY "users"."id")
 
     SELECT "id","createdAt","image","email","scope","username","description","emoji","active",
-    "birthyear","status","genderlist","loveCommon","hateCommon","locations"
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations","isbanned"
     FROM "Users"
     left join "UserLoveCommon"
     ON "Users"."id" = "UserLoveCommon"."userLoveId"
