@@ -30,7 +30,7 @@ export const getUsersBatch = (request, reply) =>
   dbGetUsersBatch(request.params.pageNumber, request.pre.user.id).then(reply);
 
 export const getUser = (request, reply) => {
-  const user = dbGetUser(request.params.userId);
+  const user = dbGetUser(request.params.userId, request.pre.user.id);
 
   if (user.isbanned === '1') {
     user.isBanned = true;

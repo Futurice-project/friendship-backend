@@ -34,6 +34,6 @@ exports.seed = knex =>
   .then(() =>
   knex.batchInsert(
     'user_tag',
-    simpleFixtures.generateFixtures(usertagFields, 100),
+    simpleFixtures.generateFixtures(usertagFields, 500),
   ),
 );

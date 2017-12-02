@@ -18,8 +18,6 @@ const userListFields = [
   'image',
 ];
 
-const pageLimit = 10;
-
 export const dbGetUsers = () =>
   knex('users')
     .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
@@ -35,33 +33,184 @@ export const dbGetFilteredUsers = filter =>
     .select(userListFields)
     .orderBy('id', 'asc');
 
-export const dbGetUsersBatch = (pageNumber, userId) =>
-  knex('users')
-    .select(userListFields)
-    .limit(pageLimit)
-    .offset(pageNumber * pageLimit)
-    .where('id', '!=', userId);
+export const dbGetUsersBatch = async (pageNumber, userId) => {
+  const pageLimit = 10;
+  // knex('users')
+  //   .select(userListFields)
+  //   .limit(pageLimit)
+  //   .offset(pageNumber * pageLimit)
+  //   .where('id', '!=', userId);
+
+  const users = await knex.raw(`
+    WITH "Users"
+    AS (SELECT "users"."id","users"."createdAt","email","scope",
+    "username","description","emoji","active","birthyear","status",
+    array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+    WHERE "users"."id" != ` + userId + `
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserLoveCommon"
+    AS (SELECT "users"."id" as "userLoveId", count(DISTINCT "tags"."name") AS "loveCommon"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ true + `
+    AND "users"."id" != ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + userId + `
+                      AND "user_tag"."love" =`+ true +`)
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserHateCommon"
+    AS (SELECT "users"."id" as "userHateId",
+    count(DISTINCT "tags"."name") AS "hateCommon"
+    FROM "users"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ false + `
+    AND "users"."id" != ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + userId + `
+                      AND "user_tag"."love" =`+ false +`)
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserLocation"
+    AS (SELECT "users"."id" as "userId",
+    array_agg(DISTINCT "locations"."name") AS "locations"
+    FROM "users"
+        left join "user_location"
+        ON "user_location"."userId" = "users"."id"
+        left join "locations"
+        ON "locations"."id" = "user_location"."locationId"
+    WHERE "users"."id" != ` + userId + `
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `)
+
+    SELECT "id","createdAt","email","scope","username","description","emoji","active",
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations"
+    FROM "Users"
+    left join "UserLoveCommon"
+    ON "Users"."id" = "UserLoveCommon"."userLoveId"
+    left join "UserHateCommon"
+    ON "Users"."id" = "UserHateCommon"."userHateId"
+    left join "UserLocation"
+    ON "Users"."id" = "UserLocation"."userId"
+    `).then(results => results.rows);
+
+  return users;
+};
 
 export const dbGetEmailVerification = hash =>
   knex('email_verification')
     .first()
     .where({ hash });
 
-export const dbGetUser = async (id) => {
-  const user = await knex('users')
-    .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
-    .select(userListFields)
-    .count('banned_users.id as isbanned')
-    .groupBy('users.id')
-    .first()
-    .where('users.id', '=', id);
+export const dbGetUser = async (userId, currentUserId) => {
+  // const user = await knex('users')
+  //   .leftJoin('banned_users', 'banned_users.user_id', 'users.id')
+  //   .select(userListFields)
+  //   .count('banned_users.id as isbanned')
+  //   .groupBy('users.id')
+  //   .first()
+  //   .where('users.id', '=', id);
+
+  const user = await knex.raw(`
+    WITH "Users"
+    AS (SELECT "users"."id","users"."createdAt","image","email","scope",
+    "username","description","emoji","active","birthyear","status",
+    array_agg(DISTINCT "genders"."gender") AS "genderlist",
+    count("banned_users"."id") AS "isbanned"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+          left join "banned_users"
+          ON "banned_users"."user_id" = "users"."id"
+    WHERE "users"."id" = ` + userId + `
+    GROUP BY "users"."id"),
+
+    "UserLoveCommon"
+    AS (SELECT "users"."id" AS "userLoveId",count(DISTINCT "tags"."name") AS "loveCommon"
+    FROM "users"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ true + `
+    AND "users"."id" = ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + currentUserId + `
+                      AND "user_tag"."love" =`+ true +`)
+    GROUP BY "users"."id"),
+
+    "UserHateCommon"
+    AS (SELECT "users"."id" as "userHateId",
+    count(DISTINCT "tags"."name") AS "hateCommon"
+    FROM "users"
+        left join "user_tag"
+        ON "user_tag"."userId" = "users"."id"
+        left join "tags"
+        ON "tags"."id" = "user_tag"."tagId"
+    WHERE "user_tag"."love" = `+ false + `
+    AND "users"."id" = ` + userId + `
+    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
+                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
+                      WHERE "user_tag"."userId" = ` + currentUserId + `
+                      AND "user_tag"."love" =`+ false +`)
+    GROUP BY "users"."id"),
+
+    "UserLocation"
+    AS (SELECT "users"."id" as "userId",
+    array_agg(DISTINCT "locations"."name") AS "locations"
+    FROM "users"
+        left join "user_location"
+        ON "user_location"."userId" = "users"."id"
+        left join "locations"
+        ON "locations"."id" = "user_location"."locationId"
+    WHERE "users"."id" = ` + userId + `
+    GROUP BY "users"."id")
+
+    SELECT "id","createdAt","image","email","scope","username","description","emoji","active",
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations","isbanned"
+    FROM "Users"
+    left join "UserLoveCommon"
+    ON "Users"."id" = "UserLoveCommon"."userLoveId"
+    left join "UserHateCommon"
+    ON "Users"."id" = "UserHateCommon"."userHateId"
+    left join "UserLocation"
+    ON "Users"."id" = "UserLocation"."userId"
+    `).then(results => results.rows);
 
   // we convert the image in base 64 so we can display it in our app
-  if (user.image) {
-    user.image = user.image.toString('base64');
+  if (user[0].image) {
+    user[0].image = user[0].image.toString('base64');
   }
 
-  return user;
+  return user[0];
 };
 
 export const dbUpdatePassword = (id, hash) =>
