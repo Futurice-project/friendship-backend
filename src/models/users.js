@@ -51,7 +51,7 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
       ON "user_gender"."userId" = "users"."id"
       left join "genders"
       ON "genders"."id" = "user_gender"."genderId"
-    AND "users"."id" != ` + userId + `
+    WHERE "users"."id" != ` + userId + `
     GROUP BY "users"."id"
     LIMIT ` + pageLimit + `
     OFFSET ` + (pageNumber * pageLimit) + `),
