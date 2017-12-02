@@ -42,10 +42,22 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
   //   .where('id', '!=', userId);
 
   const users = await knex.raw(`
-    WITH "UserLoveCommon"
+    WITH "Users"
     AS (SELECT "users"."id","users"."createdAt","email","scope",
     "username","description","emoji","active","birthyear","status",
-    count(DISTINCT "tags"."name") AS "loveCommon", array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    FROM "users"
+      left join "user_gender"
+      ON "user_gender"."userId" = "users"."id"
+      left join "genders"
+      ON "genders"."id" = "user_gender"."genderId"
+    AND "users"."id" != ` + userId + `
+    GROUP BY "users"."id"
+    LIMIT ` + pageLimit + `
+    OFFSET ` + (pageNumber * pageLimit) + `),
+
+    "UserLoveCommon"
+    AS (SELECT "users"."id" as "userLoveId", count(DISTINCT "tags"."name") AS "loveCommon"
     FROM "users"
       left join "user_gender"
       ON "user_gender"."userId" = "users"."id"
@@ -98,11 +110,13 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
 
     SELECT "id","createdAt","email","scope","username","description","emoji","active",
     "birthyear","status","genderlist","loveCommon","hateCommon","locations"
-    FROM "UserLoveCommon"
+    FROM "Users"
+    left join "UserLoveCommon"
+    ON "Users"."id" = "UserLoveCommon"."userLoveId"
     left join "UserHateCommon"
-    ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
+    ON "Users"."id" = "UserHateCommon"."userHateId"
     left join "UserLocation"
-    ON "UserLoveCommon"."id" = "UserLocation"."userId"
+    ON "Users"."id" = "UserLocation"."userId"
     `).then(results => results.rows);
 
   return users;
@@ -123,15 +137,24 @@ export const dbGetUser = async (userId, currentUserId) => {
   //   .where('users.id', '=', id);
 
   const user = await knex.raw(`
-    WITH "UserLoveCommon"
+    WITH "Users"
     AS (SELECT "users"."id","users"."createdAt","image","email","scope",
     "username","description","emoji","active","birthyear","status",
-    count(DISTINCT "tags"."name") AS "loveCommon", array_agg(DISTINCT "genders"."gender") AS "genderlist"
+    array_agg(DISTINCT "genders"."gender") AS "genderlist",
+    count("banned_users"."id") AS "isbanned"
     FROM "users"
       left join "user_gender"
       ON "user_gender"."userId" = "users"."id"
       left join "genders"
       ON "genders"."id" = "user_gender"."genderId"
+          left join "banned_users"
+          ON "banned_users"."user_id" = "users"."id"
+    WHERE "users"."id" = ` + userId + `
+    GROUP BY "users"."id"),
+
+    "UserLoveCommon"
+    AS (SELECT "users"."id" AS "userLoveId",count(DISTINCT "tags"."name") AS "loveCommon"
+    FROM "users"
         left join "user_tag"
         ON "user_tag"."userId" = "users"."id"
         left join "tags"
@@ -173,16 +196,18 @@ export const dbGetUser = async (userId, currentUserId) => {
 
     SELECT "id","createdAt","image","email","scope","username","description","emoji","active",
     "birthyear","status","genderlist","loveCommon","hateCommon","locations"
-    FROM "UserLoveCommon"
+    FROM "Users"
+    left join "UserLoveCommon"
+    ON "Users"."id" = "UserLoveCommon"."userLoveId"
     left join "UserHateCommon"
-    ON "UserLoveCommon"."id" = "UserHateCommon"."userHateId"
+    ON "Users"."id" = "UserHateCommon"."userHateId"
     left join "UserLocation"
-    ON "UserLoveCommon"."id" = "UserLocation"."userId"
+    ON "Users"."id" = "UserLocation"."userId"
     `).then(results => results.rows);
 
   // we convert the image in base 64 so we can display it in our app
   if (user[0].image) {
-    user[0].image = user.image.toString('base64');
+    user[0].image = user[0].image.toString('base64');
   }
 
   return user[0];

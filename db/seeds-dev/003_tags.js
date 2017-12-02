@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const tagFields = {
   name: () => faker.company.catchPhraseNoun() + faker.random.number({ min: 1, max: 999 }),
-  category: () => faker.random.number({ min: 1, max: 5 }),
+  category: () => faker.random.number({ min: 1, max: 3 }),
   createdAt: moment(),
 };
 
