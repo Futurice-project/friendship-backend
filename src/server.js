@@ -56,9 +56,9 @@ export default Glue.compose({
         register: './plugins/nes_plugin'
       }
     },
-    // {
-    //   plugin: metrics,
-    // },
+    {
+      plugin: metrics,
+    },
     {
       plugin: {
         register: 'good',
