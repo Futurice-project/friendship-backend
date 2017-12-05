@@ -10,6 +10,7 @@ import Vision from 'vision';
 import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
+import metrics from './plugins/metrics';
 
 
 // Always use UTC timezone
@@ -55,6 +56,9 @@ export default Glue.compose({
         register: './plugins/nes_plugin'
       }
     },
+    // {
+    //   plugin: metrics,
+    // },
     {
       plugin: {
         register: 'good',
