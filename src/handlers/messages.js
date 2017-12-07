@@ -16,8 +16,11 @@ export const createMessage = function(request, reply) {
     text_message: request.payload.textMessage,
     chatroom_id: request.params.chatroomId,
   })
+    .then((message) => {
+      this.publish(`/chatrooms/${request.params.chatroomId}`, message);
+      return message;
+    })
     .then(reply)
-    .then(() => this.server.publish(`/chatrooms/${request.params.chatroomId}`, request.payload.textMessage))
     .catch((err) => {
       if (err.constraint) {
         reply(Boom.conflict('Constraint Error: ', err));

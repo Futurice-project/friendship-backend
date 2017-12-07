@@ -12,11 +12,11 @@ import {
   getTagsUser,
   countTagLikes,
   createUserTag,
+  createUserTags,
   delUserTag,
   getTagsForUser,
   getTagList,
   getUsersInTag,
-  dbGetFilteredTags,
 } from '../handlers/tags';
 
 const validateTagId = {
@@ -51,13 +51,21 @@ const validateUserTagFields = {
   },
 };
 
+const validateUserTagArray = {
+  validate: {
+    payload: {
+      tags: Joi.array(),
+    },
+  },
+};
+
 const tags = [
   // Get a list of all tags
   {
     method: 'GET',
     path: '/tags',
     config: getAuthWithScope('user'),
-    handler: getTagList,
+    handler: getTags,
   },
   {
     method: 'GET',
@@ -138,6 +146,14 @@ const tags = [
     path: '/user_tag',
     config: merge({}, validateUserTagFields, getAuthWithScope('user')),
     handler: createUserTag,
+  },
+  // Delete previous user tags & add new user tags
+  // Remember to send all user tags at once, or else dat is deleted
+  {
+    method: 'POST',
+    path: '/user_tags',
+    config: merge({}, validateUserTagArray, getAuthWithScope('user')),
+    handler: createUserTags,
   },
   //  Delete a tag that is connected to a user
   // @todo check if the OWNER is deleting this,

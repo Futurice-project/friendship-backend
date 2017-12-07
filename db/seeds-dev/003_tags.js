@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const tagFields = {
   name: () => faker.company.catchPhraseNoun() + faker.random.number({ min: 1, max: 999 }),
-  category: () => faker.random.number({ min: 1, max: 3 }),
+  category: () => faker.random.number({ min: 1, max: 2 }),
   createdAt: moment(),
 };
 
@@ -34,6 +34,6 @@ exports.seed = knex =>
   .then(() =>
   knex.batchInsert(
     'user_tag',
-    simpleFixtures.generateFixtures(usertagFields, 500),
+    simpleFixtures.generateFixtures(usertagFields, 100),
   ),
 );
