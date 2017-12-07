@@ -7,6 +7,7 @@ import {
   dbDelTag,
   dbUpdateTag,
   dbCreateUserTag,
+  dbCreateUserTags,
   dbGetUserTags,
   dbGetTagsUser,
   dbGetCountLikes,
@@ -42,7 +43,7 @@ export const delTag = (request, reply) => dbDelTag(request.params.tagId).then(re
 
 export const updateTag = async (request, reply) => {
   if (request.pre.user.scope !== 'admin') {
-    return reply(Boom.unauthorized('Unprivileged users cannot update personality'));
+    return reply(Boom.unauthorized('Unprivileged users cannot update tag'));
   }
 
   const fields = {
@@ -78,6 +79,31 @@ export const createUserTag = (request, reply) => {
       }
     });
 };
+
+// Batch add an array of tags to a user
+// Format payload:
+// { tags: [{"tagId": 1, "love":true}, {"tagId": 3, "love": false}, {"tagId": 4, love: null }] }
+export const createUserTags = (request, reply) => {
+  const tagArray = [];
+  request.payload.tags.forEach((tag) => {
+    tagArray.push({
+      tagId: tag.tagId,
+      love: tag.love,
+      userId: request.pre.user.id,
+    });
+  });
+
+  return dbCreateUserTags(request.pre.user.id, tagArray)
+    .then(reply)
+    .catch((err) => {
+      if (err.constraint) {
+        reply(Boom.conflict('Constraint Error: ', err));
+      } else {
+        reply(Boom.badImplementation(err));
+      }
+    });
+};
+
 export const getUsersInTag = (request, reply) => dbGetUsersInTag(request.params.tagId).then(reply);
 // Get all tags of a user
 export const getUserTags = (request, reply) => dbGetUserTags(request.params.userId).then(reply);

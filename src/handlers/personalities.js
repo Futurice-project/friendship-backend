@@ -9,7 +9,7 @@ import {
   dbGetUserPersonalities,
   dbUpdateUserPersonality,
   dbCreateUserPersonality,
-  dbCreateUserPersonalities
+  dbCreateUserPersonalities,
 } from '../models/personalities';
 
 export const getPersonalities = (request, reply) => dbGetPersonalities().then(reply);

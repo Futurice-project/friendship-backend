@@ -101,6 +101,22 @@ export const dbCreateUserTag = ({ ...fields }) =>
     return tag;
   });
 
+export const dbCreateUserTags = (userId, tagArray) =>
+  knex.transaction(async (trx) => {
+    await trx('user_tag')
+      .where({ userId })
+      .returning('*')
+      .del()
+      .then();
+
+    const userTags = await trx('user_tag')
+      .insert(tagArray)
+      .returning('*')
+      .then(results => results);
+
+    return userTags;
+  });
+
 //  Delete a user_tag
 export const dbDelUserTag = (userId, tagId) =>
   knex('user_tag')
