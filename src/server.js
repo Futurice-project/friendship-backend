@@ -2,45 +2,47 @@ import Glue from 'glue';
 import Routes from 'hapi-routes-relative';
 import Hoek from 'hoek';
 import schedule from 'node-schedule';
-import { join } from 'path';
+import {join} from 'path';
 
 import Lout from 'lout';
 import Inert from 'inert';
 import Vision from 'vision';
 
 import config from './utils/config';
-import { validateJwt } from './utils/auth';
-import { goodOptions } from './utils/log';
-import {dbGetUsersRegistered,
-        dbInsertUsersRegistered,
-        dbGetNbActiveUsers,
-        dbInsertActiveUsers} from "./models/metrics";
-
+import {validateJwt} from './utils/auth';
+import {goodOptions} from './utils/log';
+import {
+  dbGetUsersRegistered,
+  dbInsertUsersRegistered,
+  dbGetNbActiveUsers,
+  dbInsertActiveUsers
+} from "./models/metrics";
 
 
 // Always use UTC timezone
 process.env.TZ = 'UTC';
 
-// schedule.scheduleJob('* * * * * *', () => {
-//     //convert users registered
-//     dbGetUsersRegistered().then((result) => {
-//         dbInsertUsersRegistered(result[0]);
-//     })
-// })
+schedule.scheduleJob('* * 23 59 * *', () => {
+  //convert users registered
+  dbGetUsersRegistered().then((result) => {
+    dbInsertUsersRegistered(result[0]);
+  })
 
-// dbGetUsersRegistered().then((result) => {
-//   dbInsertUsersRegistered(result[0])
-// })
-//
-// dbGetNbActiveUsers().then((result) => {
-//   dbInsertActiveUsers(result[0])
-// })
+  dbGetUsersRegistered().then((result) => {
+    dbInsertUsersRegistered(result[0])
+  })
+
+  // dbGetNbActiveUsers().then((result) => {
+  //   dbInsertActiveUsers(result[0])
+  // })
+
+})
 
 // Glue is a hapi.js server wrapper
 export default Glue.compose({
   server: {
     // Only affects verbosity of logging to console
-    debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
+    debug: process.env.NODE_ENV === 'test' ? false : {request: ['error']}
   },
   connections: [
     {
@@ -48,28 +50,28 @@ export default Glue.compose({
       host: config.server.host,
       port: config.server.port,
       routes: {
-        cors: true,
-      },
-    },
+        cors: true
+      }
+    }
   ],
   registrations: [
     {
-      plugin: Vision,
+      plugin: Vision
     },
     {
-      plugin: Inert,
+      plugin: Inert
     },
     {
-      plugin: Lout,
+      plugin: Lout
     },
     {
-      plugin: 'hapi-auth-jwt2',
+      plugin: 'hapi-auth-jwt2'
     },
     {
-      plugin: 'hapi-qs',
+      plugin: 'hapi-qs'
     },
     {
-      plugin: 'nes',
+      plugin: 'nes'
     },
     {
       plugin: {
@@ -79,15 +81,15 @@ export default Glue.compose({
     {
       plugin: {
         register: 'good',
-        options: goodOptions,
-      },
-    },
-  ],
-}, { relativeTo: __dirname }).then((server) => {
+        options: goodOptions
+      }
+    }
+  ]
+}, {relativeTo: __dirname}).then((server) => {
   server.auth.strategy('jwt', 'jwt', {
     key: config.auth.secret,
     validateFunc: validateJwt,
-    verifyOptions: { algorithms: config.auth.algorithms },
+    verifyOptions: {algorithms: config.auth.algorithms}
   });
 
   // Uncomment to require authentication by default in all routes
@@ -98,12 +100,12 @@ export default Glue.compose({
     server.register(
       {
         register: Routes,
-        options: { dir: join(__dirname, 'routes') },
+        options: {dir: join(__dirname, 'routes')}
       },
       (err) => {
         Hoek.assert(!err, err);
         resolve(server);
-      },
+      }
     );
   });
 })
