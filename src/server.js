@@ -11,7 +11,10 @@ import Vision from 'vision';
 import config from './utils/config';
 import { validateJwt } from './utils/auth';
 import { goodOptions } from './utils/log';
-import {dbGetUsersRegistered, dbInsertUsersRegistered} from "./models/metrics";
+import {dbGetUsersRegistered,
+        dbInsertUsersRegistered,
+        dbGetNbActiveUsers,
+        dbInsertActiveUsers} from "./models/metrics";
 
 
 
@@ -25,9 +28,14 @@ process.env.TZ = 'UTC';
 //     })
 // })
 
-dbGetUsersRegistered().then((result) => {
-  dbInsertUsersRegistered(result[0])
-})
+// dbGetUsersRegistered().then((result) => {
+//   dbInsertUsersRegistered(result[0])
+// })
+//
+// dbGetNbActiveUsers().then((result) => {
+//   dbInsertActiveUsers(result[0])
+// })
+
 // Glue is a hapi.js server wrapper
 export default Glue.compose({
   server: {

@@ -1,24 +1,34 @@
 import knex from '../utils/db';
 import moment from 'moment';
 
+// Returns total number of matches that are messaging
 export const dbGetNbMatchesMessaging = () => {
   return -1;
 }
 
+// Returns average number of chatrooms per user
 export const dbGetAvgChatroomsPerUser = () => {
   return knex.raw(`SELECT CAST((SELECT COUNT(users.id) FROM users) AS DECIMAL) / ( SELECT COUNT(chatrooms.id) AS DECIMAL) FROM chatrooms);`)
 }
 
-export const dbGetNbMessagesByConversation = () => knex.raw('SELECT CAST(COUNT(id) / COUNT(DISTINCT chatroom_id) AS DECIMAL) FROM messages;');
+// Returns average number of messages per conversation
+export const dbGetNbMessagesByConversation = () => knex.raw('SELECT CAST(COUNT(id) / COUNT(DISTINCT chatroom_id) AS DECIMAL) FROM messages; ');
 
+// Returns total number of messages
 export const dbGetNbMessages = () => {
-  return -1;
+  return knex.raw(`SELECT COUNT(id) FROM messages`);
 }
 
+/** Returns total number of users that opened the application this day
+  * Is executed automactically today
+*/
 export const dbGetNbActiveUsers = () => {
-  return knex.raw(`SELECT COUNT(id) as active_users WHERE last_active >= to_timestamp(${moment().startOf('day').unix()}) AND last_active <= to_timestamp(${moment().endOf('day').unix()}) FROM users`).then(results => results.rows);
+  return knex.raw(`SELECT COUNT(users.id) AS active_users WHERE last_active >= to_timestamp(${moment().startof('day').unix()}) AND last_active <= to_timestamp(${moment().endof('day').unix()}) FROM users`).then(results => results.rows);
 }
 
+/** Returns the number of users registered this day
+  * Is executed automatically each day
+*/
 export const dbGetUsersRegistered = () => {
   return knex.raw(`SELECT COUNT(users.id) as users_count, (SELECT COUNT(users.id) FROM "users" WHERE "users"."createdAt" >= to_timestamp(${moment().startOf('day').unix()}) AND "users"."createdAt" <= to_timestamp(${moment().endOf('day').unix()})) as registered_today from users`).then(results => results.rows);
 }
@@ -55,6 +65,10 @@ export const dbInsertUsersRegistered = (data) => {
     registered_today: parseInt(data.registered_today, 0),
     timestamp: moment().utc().toISOString()
   }
+
+  // knex('metrics_users_registered')
+  //     .insert(fields)
+  //     .returning('*');
 
   return knex.transaction((tx) => {
     return tx.insert(fields)

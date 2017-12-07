@@ -2,6 +2,7 @@ import Boom from 'boom';
 
 import {
   dbGetNbMatchesMessaging,
+  dbGetAvgChatroomsPerUser,
   dbGetNbMessagesByConversation,
   dbGetNbMessages,
   dbGetNbActiveUsers,
@@ -10,6 +11,10 @@ import {
 
 export const getNbMatchesMessaging = (request, reply) => {
   dbGetNbMatchesMessaging().then(reply);
+}
+
+export const getAvgChatroomsPerUser = (request, reply) => {
+  dbGetAvgChatroomsPerUser().then(reply);
 }
 
 export const getNbMessagesByConversation = (request, reply) => {
