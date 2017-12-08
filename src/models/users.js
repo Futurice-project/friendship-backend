@@ -43,7 +43,7 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
 
   const users = await knex.raw(`
     WITH "Users"
-    AS (SELECT "users"."id","users"."createdAt","email","scope",
+    AS (SELECT "users"."id","users"."createdAt","image","email","scope",
     "username","description","emoji","active","birthyear","status",
     array_agg(DISTINCT "genders"."gender") AS "genderlist"
     FROM "users"
@@ -51,10 +51,10 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
       ON "user_gender"."userId" = "users"."id"
       left join "genders"
       ON "genders"."id" = "user_gender"."genderId"
-    WHERE "users"."id" != ` + userId + `
+    WHERE "users"."id" != ${userId}
     GROUP BY "users"."id"
-    LIMIT ` + pageLimit + `
-    OFFSET ` + (pageNumber * pageLimit) + `),
+    LIMIT ${pageLimit}
+    OFFSET ${pageNumber * pageLimit}),
 
     "UserLoveCommon"
     AS (SELECT "users"."id" as "userLoveId", count(DISTINCT "tags"."name") AS "loveCommon"
@@ -67,15 +67,15 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
         ON "user_tag"."userId" = "users"."id"
         left join "tags"
         ON "tags"."id" = "user_tag"."tagId"
-    WHERE "user_tag"."love" = `+ true + `
-    AND "users"."id" != ` + userId + `
+    WHERE "user_tag"."love" = ${true}
+    AND "users"."id" != ${userId}
     AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                       left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                      WHERE "user_tag"."userId" = ` + userId + `
-                      AND "user_tag"."love" =`+ true +`)
+                      WHERE "user_tag"."userId" = ${userId}
+                      AND "user_tag"."love" = ${true})
     GROUP BY "users"."id"
-    LIMIT ` + pageLimit + `
-    OFFSET ` + (pageNumber * pageLimit) + `),
+    LIMIT ${pageLimit}
+    OFFSET ${pageNumber * pageLimit}),
 
     "UserHateCommon"
     AS (SELECT "users"."id" as "userHateId",
@@ -85,15 +85,15 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
         ON "user_tag"."userId" = "users"."id"
         left join "tags"
         ON "tags"."id" = "user_tag"."tagId"
-    WHERE "user_tag"."love" = `+ false + `
-    AND "users"."id" != ` + userId + `
+    WHERE "user_tag"."love" = ${false}
+    AND "users"."id" != ${userId}
     AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                       left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                      WHERE "user_tag"."userId" = ` + userId + `
-                      AND "user_tag"."love" =`+ false +`)
+                      WHERE "user_tag"."userId" = ${userId}
+                      AND "user_tag"."love" = ${false})
     GROUP BY "users"."id"
-    LIMIT ` + pageLimit + `
-    OFFSET ` + (pageNumber * pageLimit) + `),
+    LIMIT ${pageLimit}
+    OFFSET ${pageNumber * pageLimit}),
 
     "UserLocation"
     AS (SELECT "users"."id" as "userId",
@@ -103,13 +103,14 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
         ON "user_location"."userId" = "users"."id"
         left join "locations"
         ON "locations"."id" = "user_location"."locationId"
-    WHERE "users"."id" != ` + userId + `
+    WHERE "users"."id" != ${userId}
     GROUP BY "users"."id"
-    LIMIT ` + pageLimit + `
-    OFFSET ` + (pageNumber * pageLimit) + `)
+    LIMIT ${pageLimit}
+    OFFSET ${pageNumber * pageLimit})
 
     SELECT "id","createdAt","email","scope","username","description","emoji","active",
-    "birthyear","status","genderlist","loveCommon","hateCommon","locations"
+    "birthyear","status","genderlist","loveCommon","hateCommon","locations",
+    "image"
     FROM "Users"
     left join "UserLoveCommon"
     ON "Users"."id" = "UserLoveCommon"."userLoveId"
@@ -119,7 +120,12 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
     ON "Users"."id" = "UserLocation"."userId"
     `).then(results => results.rows);
 
-  return users;
+  return users.map((user) => {
+    if (user.image) {
+      user.image = user.image.toString('base64');
+    }
+    return user;
+  });
 };
 
 export const dbGetEmailVerification = hash =>
@@ -149,7 +155,7 @@ export const dbGetUser = async (userId, currentUserId) => {
       ON "genders"."id" = "user_gender"."genderId"
           left join "banned_users"
           ON "banned_users"."user_id" = "users"."id"
-    WHERE "users"."id" = ` + userId + `
+    WHERE "users"."id" = ${userId}
     GROUP BY "users"."id"),
 
     "UserLoveCommon"
@@ -159,12 +165,12 @@ export const dbGetUser = async (userId, currentUserId) => {
         ON "user_tag"."userId" = "users"."id"
         left join "tags"
         ON "tags"."id" = "user_tag"."tagId"
-    WHERE "user_tag"."love" = `+ true + `
-    AND "users"."id" = ` + userId + `
+    WHERE "user_tag"."love" = ${true}
+    AND "users"."id" = ${userId}
     AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                       left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                      WHERE "user_tag"."userId" = ` + currentUserId + `
-                      AND "user_tag"."love" =`+ true +`)
+                      WHERE "user_tag"."userId" = ${currentUserId}
+                      AND "user_tag"."love" = ${true})
     GROUP BY "users"."id"),
 
     "UserHateCommon"
@@ -175,12 +181,12 @@ export const dbGetUser = async (userId, currentUserId) => {
         ON "user_tag"."userId" = "users"."id"
         left join "tags"
         ON "tags"."id" = "user_tag"."tagId"
-    WHERE "user_tag"."love" = `+ false + `
-    AND "users"."id" = ` + userId + `
+    WHERE "user_tag"."love" = ${false}
+    AND "users"."id" = ${userId}
     AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                       left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                      WHERE "user_tag"."userId" = ` + currentUserId + `
-                      AND "user_tag"."love" =`+ false +`)
+                      WHERE "user_tag"."userId" = ${currentUserId}
+                      AND "user_tag"."love" = ${false})
     GROUP BY "users"."id"),
 
     "UserLocation"
@@ -191,7 +197,7 @@ export const dbGetUser = async (userId, currentUserId) => {
         ON "user_location"."userId" = "users"."id"
         left join "locations"
         ON "locations"."id" = "user_location"."locationId"
-    WHERE "users"."id" = ` + userId + `
+    WHERE "users"."id" = ${userId}
     GROUP BY "users"."id")
 
     SELECT "id","createdAt","image","email","scope","username","description","emoji","active",
