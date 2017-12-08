@@ -77,6 +77,7 @@
     "node-uuid": "^1.4.8",
     "pg": "^6.4.2",
     "prompt": "^1.0.0",
+    "register": "0.0.0",
     "simple-fixtures": "^1.0.1",
     "vision": "^4.1.1",
     "white-out": "^2.0.0"
