@@ -10,6 +10,7 @@ $ yarn
 ## Install PostgreSQL
 
 Look up instructions for your specific OS/distribution.
+Version 10.1 has been tested to work, but version 9 should be fine as well.
 
 ## Initialize DB
 ```
@@ -28,6 +29,20 @@ postgres=# \q
 $ yarn db:init
 ```
 
+## Run backend
+### Run in development, watching for changes
+```
+$ yarn watch
+```
+
+### Run in production
+```
+$ yarn start
+```
+
+Backend is now listening on port 3888 (or `$PORT` if set)
+
+# Production setup
 ## Register admin user (production environments)
 ```
 # Get URL from e.g. Heroku dashboard
@@ -64,15 +79,3 @@ Recommendation for generating `[secret-string]`:
 $ node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
 ```
 
-## Run backend
-### Run in development, watching for changes
-```
-$ yarn watch
-```
-
-### Run in production
-```
-$ yarn start
-```
-
-Backend is now listening on port 3888 (or `$PORT` if set)
