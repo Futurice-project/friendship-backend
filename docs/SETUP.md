@@ -1,4 +1,4 @@
-# Setup
+# Development setup
 
 [yarn](https://github.com/yarnpkg/yarn) 0.18+ must be present on your machine.
 
@@ -7,27 +7,23 @@
 $ yarn
 ```
 
-## Install PostgreSQL
+## Install Docker
 
-Look up instructions for your specific OS/distribution.
-Version 10.1 has been tested to work, but version 9 should be fine as well.
+- Linux (e.g. Ubuntu): https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+- macOS: https://docs.docker.com/docker-for-mac/install/
+- Windows: https://docs.docker.com/docker-for-windows/install/
+
+## Start PostgreSQL using Docker
+```
+docker run -p 5432:5432 -d postgres
+```
 
 ## Initialize DB
 ```
-$ psql --user postgres
-```
-
-NOTE: If you get errors when running the above command:
-[Troubleshooting PostgreSQL connection errors](/docs/POSTGRESQL.md)
-
-```
-postgres=# CREATE DATABASE backendkit;
-postgres=# \q
-```
-
-```
 $ yarn db:init
 ```
+
+Note: this will also work for wiping the DB clean when needed.
 
 ## Run backend
 ### Run in development, watching for changes

@@ -33,7 +33,7 @@ const config = {
       host: '127.0.0.1',
       user: 'postgres',
       password: '',
-      database: 'backendkit',
+      database: 'friendship',
       ssl: false,
     },
     pool: {
