@@ -7,7 +7,7 @@ import {
   getEvent,
   CreateEvent,
   UpdateEvent,
-  delEvent
+  delEvent,
 } from '../handlers/events';
 
 const validateEventId = {
@@ -23,14 +23,14 @@ const validateEventId = {
 const validateEventFields = {
   validate: {
     payload: {
+      title: Joi.string(),
       description: Joi.string(),
-      location : Joi.string(),
-      eventDate : Joi.date().timestamp(),
-      createdAt : Joi.date().timestamp(),
+      location: Joi.string(),
+      eventDate: Joi.date().timestamp(),
+      createdAt: Joi.date().timestamp(),
     },
   },
 };
-
 
 const events = [
   // Get a list of all events
@@ -39,7 +39,7 @@ const events = [
     path: '/events',
     handler: getEvents,
   },
-  // Get info about a specific reports
+  // Get info about a specific event
   {
     method: 'GET',
     path: '/event/{eventId}',

@@ -1,6 +1,14 @@
 import knex from '../utils/db';
 
-const eventFields = ['id','createdAt', 'description', 'location', 'eventDate'];
+const eventFields = [
+  'id',
+  'createdAt',
+  'title',
+  'eventImage',
+  'description',
+  'location',
+  'eventDate',
+];
 
 export const dbGetEvents = () => knex('events').select(eventFields);
 
@@ -9,8 +17,8 @@ export const dbGetEvent = id =>
     .first()
     .where({ id });
 
-export const dbCreateEvent= ({ ...fields }) =>
-  knex.transaction(async (trx) => {
+export const dbCreateEvent = ({ ...fields }) =>
+  knex.transaction(async trx => {
     const report = await trx('events')
       .insert(fields)
       .returning('*')
@@ -18,7 +26,6 @@ export const dbCreateEvent= ({ ...fields }) =>
 
     return report;
   });
-
 
 export const dbDelEvent = id =>
   knex('events')

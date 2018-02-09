@@ -5,11 +5,13 @@ exports.up = knex =>
      *
      * Contains info on all events in the system
      */
-    .createTableIfNotExists('events', (table) => {
+    .createTableIfNotExists('events', table => {
       table.increments('id').primary();
       table.timestamp('createdAt').defaultTo(knex.fn.now());
+      table.text('title');
+      table.binary('eventImage');
       table.text('description');
       table.text('location');
       table.timestamp('eventDate');
-    })
-  exports.down = knex => knex.schema.dropTableIfExists('events');
+    });
+exports.down = knex => knex.schema.dropTableIfExists('events');
