@@ -23,7 +23,7 @@ const eventParticipants = [
   // Get a list of all events
   {
     method: 'GET',
-    path: '/eventParticipants/{eventId}',
+    path: '/eventParticipants/{eventId}/{userId}',
     handler: getEventParticipants,
   },
   // Get info about a specific reports

@@ -9,7 +9,9 @@ import {
 } from '../models/eventParticipants';
 
 export const getEventParticipants = (request, reply) =>
-  dbGetEventParticipants(request.params.eventId).then(reply);
+  dbGetEventParticipants(request.params.eventId, request.params.userId).then(
+    reply,
+  );
 
 export const createEventParticipation = (request, reply) =>
   dbCreateEventParticipation({

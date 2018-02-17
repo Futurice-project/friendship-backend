@@ -7,7 +7,7 @@ const eventFields = {
   title: faker.lorem.word,
   eventImage: faker.image.avatar,
   description: faker.lorem.sentences,
-  location: faker.address.city,
+  location: faker.address.streetAddress,
   eventDate: moment(),
 };
 exports.seed = knex =>
