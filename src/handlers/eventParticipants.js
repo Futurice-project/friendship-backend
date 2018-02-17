@@ -6,6 +6,8 @@ import {
   dbCreateEventParticipation,
   dbGetEventParticipation,
   dbDelEventParticipation,
+  dbGetEventPerssonality,
+  dbGetEventTopYeahsNahs,
 } from '../models/eventParticipants';
 
 export const getEventParticipants = (request, reply) =>
@@ -26,6 +28,14 @@ export const getEventParticipation = (request, reply) => {
     request.params.eventId,
     request.params.userId,
   ).then(reply);
+};
+
+export const getEventPerssonality = (request, reply) => {
+  return dbGetEventPerssonality(request.params.eventId).then(reply);
+};
+
+export const getEventTopYeahsNahs = (request, reply) => {
+  return dbGetEventTopYeahsNahs(request.params.eventId).then(reply);
 };
 
 // Delete an EventParticipation that is connected to a user

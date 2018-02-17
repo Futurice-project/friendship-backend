@@ -7,6 +7,8 @@ import {
   createEventParticipation,
   getEventParticipation,
   delEventParticipation,
+  getEventPerssonality,
+  getEventTopYeahsNahs,
 } from '../handlers/eventParticipants';
 
 const validateEventPaticipationId = {
@@ -42,6 +44,16 @@ const eventParticipants = [
     path: '/eventParticipation/{eventId}/{userId}',
     //config: merge({}, validateEventFields, getAuthWithScope('admin')),
     handler: delEventParticipation,
+  },
+  {
+    method: 'GET',
+    path: '/eventPersonalities/{eventId}',
+    handler: getEventPerssonality,
+  },
+  {
+    method: 'GET',
+    path: '/eventTopYeahsNahs/{eventId}',
+    handler: getEventTopYeahsNahs,
   },
 ];
 
