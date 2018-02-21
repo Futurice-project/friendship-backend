@@ -6,7 +6,8 @@ const eventFields = [
   'title',
   'eventImage',
   'description',
-  'location',
+  'city',
+  'address',
   'eventDate',
 ];
 

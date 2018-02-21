@@ -11,7 +11,8 @@ exports.up = knex =>
       table.text('title');
       table.binary('eventImage');
       table.text('description');
-      table.text('location');
+      table.text('address');
+      table.text('city');
       table.timestamp('eventDate');
     });
 exports.down = knex => knex.schema.dropTableIfExists('events');

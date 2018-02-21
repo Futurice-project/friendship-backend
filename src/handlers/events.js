@@ -21,7 +21,8 @@ export const CreateEvent = (request, reply) =>
     title: request.payload.title,
     eventImage: request.payload.eventImage,
     description: request.payload.description,
-    location: request.payload.lcoation,
+    address: request.payload.address,
+    city: request.payload.city,
     eventDate: request.payload.eventDate,
   }).then(reply);
 
@@ -35,7 +36,8 @@ export const UpdateEvent = async (request, reply) => {
     title: request.payload.title,
     eventImage: request.payload.eventImage,
     description: request.payload.description,
-    location: request.payload.lcoation,
+    address: request.payload.address,
+    city: request.payload.city,
     eventDate: request.payload.eventDate,
   };
 

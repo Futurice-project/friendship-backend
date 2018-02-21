@@ -25,7 +25,8 @@ const validateEventFields = {
     payload: {
       title: Joi.string(),
       description: Joi.string(),
-      location: Joi.string(),
+      city: Joi.string(),
+      address: Joi.string(),
       eventDate: Joi.date().timestamp(),
       createdAt: Joi.date().timestamp(),
     },
