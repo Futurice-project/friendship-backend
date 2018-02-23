@@ -5,7 +5,6 @@ const moment = require('moment');
 const eventFields = {
   createdAt: moment(),
   title: faker.lorem.word,
-  eventImage: faker.image.avatar,
   description: faker.lorem.sentences,
   city: faker.address.city,
   address: faker.address.streetAddress,

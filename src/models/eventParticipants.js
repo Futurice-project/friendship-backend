@@ -67,7 +67,7 @@ export const dbGetEventPerssonality = async eventId => {
   WHERE "eventParticipants"."eventId" = ${eventId}
   GROUP BY "personalities"."name"
   ORDER BY "Number_of_Personalities" DESC
-  LIMIT 4`);
+  LIMIT 3`);
   return topEventPersonalities;
 };
 
@@ -111,11 +111,16 @@ export const dbCreateEventParticipation = ({ ...fields }) =>
       .then(results => results[0]),
   );
 
-export const dbGetEventParticipation = (eventId, userId) =>
-  knex('eventParticipants')
-    .select(eventParticipantFields)
-    .where({ userId })
-    .andWhere({ eventId });
+export const dbGetEventParticipation = async (eventId, userId) => {
+  const eventParticipanion = await knex.raw(
+    `SELECT "id" FROM "eventParticipants" WHERE "eventId" = ${eventId} AND "userId" = ${userId}`,
+  );
+  if (eventParticipanion.rows.length >= 1) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const dbDelEventParticipation = (eventId, userId) =>
   knex('eventParticipants')
